@@ -1,4 +1,21 @@
 @AGENTS.md
+@DECISIONS.md
+@CHANGELOG.md
+
+## How to use this project
+
+This project has 3 documentation files that must be read before making any changes:
+
+- `CLAUDE.md` — Technical architecture, stack, module logic, and business rules
+- `DECISIONS.md` — Why every decision was made. Read this before proposing alternatives.
+- `CHANGELOG.md` — What was built in each session and what is still open.
+
+**Rule:** At the end of every session, update `CHANGELOG.md` with:
+1. New decisions made
+2. Commits pushed
+3. New open items discovered
+
+Never make a change that contradicts a decision in `DECISIONS.md` without first flagging it to the user.
 
 ## Skill routing
 
