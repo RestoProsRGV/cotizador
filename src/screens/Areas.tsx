@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Pencil } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { EstimateNav } from "@/components/layout/EstimateNav";
@@ -91,13 +91,6 @@ function arrayToMaterials(arr: string[]): MaterialsValue {
   return m;
 }
 
-function getMaterialDots(materials: string[]): { floor: boolean; walls: boolean; ceiling: boolean } {
-  return {
-    floor: materials.some((m) => m.startsWith("floor:")),
-    walls: materials.some((m) => m.startsWith("walls:")),
-    ceiling: materials.some((m) => m.startsWith("ceiling:")),
-  };
-}
 
 // DimensionPair input component
 interface DimPairProps {
@@ -176,6 +169,7 @@ export function Areas() {
   const { t } = useTranslation();
 
   const [areas, setAreas] = useState<Area[]>([]);
+  const [moduleCompletions, setModuleCompletions] = useState<Record<string, Record<string, number>>>({});
   const [loading, setLoading] = useState(true);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [editingArea, setEditingArea] = useState<Area | null>(null);
@@ -205,13 +199,33 @@ export function Areas() {
       setLoading(false);
       return;
     }
-    const { data, error: err } = await supabase
-      .from("areas")
-      .select("*")
-      .eq("estimate_id", id)
-      .order("created_at", { ascending: true });
+    const [{ data, error: err }, { data: liData }] = await Promise.all([
+      supabase
+        .from("areas")
+        .select("*")
+        .eq("estimate_id", id)
+        .order("created_at", { ascending: true }),
+      supabase
+        .from("line_items")
+        .select("area_id,module")
+        .eq("estimate_id", id!)
+        .not("area_id", "is", null),
+    ]);
 
     if (!err && data) setAreas(data as Area[]);
+
+    // Build completion map: { areaId: { MODULE: count } }
+    if (liData) {
+      const completions: Record<string, Record<string, number>> = {};
+      for (const li of liData as { area_id: string; module: string }[]) {
+        if (!li.area_id) continue;
+        if (!completions[li.area_id]) completions[li.area_id] = {};
+        const areaMap = completions[li.area_id]!;
+        areaMap[li.module] = (areaMap[li.module] ?? 0) + 1;
+      }
+      setModuleCompletions(completions);
+    }
+
     setLoading(false);
   }
 
@@ -377,12 +391,17 @@ export function Areas() {
             {/* Room cards */}
             {areas.map((area) => {
               const sf = area.length * area.width;
-              const dots = getMaterialDots(area.materials);
+              const materialCount = area.materials.length;
+              const areaModules = moduleCompletions[area.id] ?? {};
+              const hasPrep = (areaModules["PREP"] ?? 0) > 0;
+              const hasDemo = (areaModules["DEM"] ?? 0) > 0;
+              const hasCleaning = (areaModules["CLN"] ?? 0) > 0;
+              const hasEquipment = (areaModules["EQP"] ?? 0) > 0;
               return (
                 <button
                   key={area.id}
                   type="button"
-                  onClick={() => openEditSheet(area)}
+                  onClick={() => navigate(`/estimates/${id}/areas/${area.id}`)}
                   style={{
                     height: "120px",
                     borderRadius: "8px",
@@ -391,41 +410,62 @@ export function Areas() {
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "flex-start",
-                    justifyContent: "flex-end",
+                    justifyContent: "space-between",
                     padding: "10px",
                     cursor: "pointer",
                     position: "relative",
                     overflow: "hidden",
                   }}
                 >
-                  {/* Top-right: material dots + note indicator */}
-                  <div style={{ position: "absolute", top: "8px", right: "8px", display: "flex", gap: "4px", alignItems: "center" }}>
+                  {/* Top row: name + edit button */}
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", width: "100%" }}>
+                    <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-text-primary)", flex: 1, textAlign: "left" }}>
+                      {area.name}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={e => { e.stopPropagation(); openEditSheet(area); }}
+                      aria-label={t("areas.editArea")}
+                      style={{ background: "transparent", border: "none", cursor: "pointer", padding: "2px", color: "var(--color-text-secondary)", flexShrink: 0 }}
+                    >
+                      <Pencil size={14} aria-hidden />
+                    </button>
+                  </div>
+
+                  {/* Middle: SF */}
+                  <span style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}>
+                    {sf > 0 ? `${Math.round(sf)} SF` : t("areas.noDimensions")}
+                  </span>
+
+                  {/* Bottom row: material chip + module dots + note */}
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px", flexWrap: "wrap" }}>
+                    {materialCount > 0 && (
+                      <span style={{ fontSize: "10px", fontWeight: 600, color: "var(--color-primary)", backgroundColor: "var(--color-primary-bg)", borderRadius: "8px", padding: "1px 6px" }}>
+                        {materialCount} mat.
+                      </span>
+                    )}
                     {area.material_note && (
                       <span
                         title={t("areas.materialNoteTooltip", { note: area.material_note })}
-                        style={{ fontSize: "14px", lineHeight: 1 }}
+                        style={{ fontSize: "12px", lineHeight: 1 }}
                         aria-label={t("areas.materialNoteTooltip", { note: area.material_note })}
                       >
                         📝
                       </span>
                     )}
-                    {dots.floor && (
-                      <span title={t("materials.floor")} style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--color-primary)", display: "block" }} />
+                    {hasPrep && (
+                      <span title="Prep" style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: "var(--color-primary)", display: "block" }} />
                     )}
-                    {dots.walls && (
-                      <span title={t("materials.walls")} style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--color-success)", display: "block" }} />
+                    {hasDemo && (
+                      <span title="Demo" style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: "var(--color-success)", display: "block" }} />
                     )}
-                    {dots.ceiling && (
-                      <span title={t("materials.ceiling")} style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--color-warning)", display: "block" }} />
+                    {hasCleaning && (
+                      <span title="Cleaning" style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: "var(--color-warning)", display: "block" }} />
+                    )}
+                    {hasEquipment && (
+                      <span title="Equipment" style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: "var(--color-text-secondary)", display: "block" }} />
                     )}
                   </div>
-
-                  <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-text-primary)", display: "block" }}>
-                    {area.name}
-                  </span>
-                  <span style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}>
-                    {sf > 0 ? `${Math.round(sf)} SF` : t("areas.noDimensions")}
-                  </span>
                 </button>
               );
             })}

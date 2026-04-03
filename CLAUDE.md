@@ -68,3 +68,32 @@ Flood cuts come in two heights, each is a separate line item with distinct codes
 Example: 20 LF of 4ft flood cut → 20 LF baseboard + 80 SF insulation.
 
 The `SuggestionRule` interface in `demoItems.ts` carries `qtyMultiplier?: number`. When present, `Demo.tsx` computes `Math.round(parentQty × multiplier)` instead of using `getDefaultQty()`. Items without `suggestionRules` fall back to the plain `suggestions: string[]` array with `getDefaultQty()`.
+
+## Module Architecture
+
+Module names use i18n keys (`nav.prep`, `nav.demo`, etc.) — may change for market launch without code changes.
+
+**PER-AREA MODULES** (scoped to each room, stored with `area_id` in `line_items`):
+- **Prep Work** — floor protection, appliances, containment, fixtures
+- **Demo** — demolition/mitigation items
+- **Cleaning** — auto-generated from area's demo scope
+- **Equipment** — IICRC calculations from area dimensions
+
+**PROJECT-LEVEL MODULES** (area_id = NULL in line_items):
+- **General** — debris haul, PPE, supervision, emergency fee
+- **Total** — sum of all areas × all modules + general
+
+**Navigation paths:**
+1. Area card → AreaDetail (`/estimates/:id/areas/:areaId`) — single area, 4-tab view
+2. Bottom nav Prep/Demo/Cleaning/Equipment → area selector list → AreaDetail tab
+
+**Area-type pre-loading rules** (from `src/constants/areaPreloads.ts`):
+
+| Area type | Demo pre-loads | Prep pre-loads |
+|-----------|---------------|----------------|
+| Bathroom | Drywall, Baseboard, Vanity, Sink, Faucet, Mirror | Floor Plastic, Content Manip |
+| Kitchen | Drywall, Baseboard, Cabinets, Sink, Faucet | Fridge, DW, Range, Floor Plastic |
+| Laundry Room | Drywall, Baseboard | Washer, Dryer, Floor Plastic |
+| Bedroom | Drywall, Baseboard | Floor Plastic |
+| Living Room | Drywall, Baseboard | Floor Plastic |
+| Hallway/Closet/Garage | Drywall, Baseboard | Floor Plastic |

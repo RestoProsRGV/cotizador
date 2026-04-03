@@ -4,6 +4,8 @@ import { Login } from "@/screens/Login";
 import { EstimatesList } from "@/screens/EstimatesList";
 import { NewEstimate } from "@/screens/NewEstimate";
 import { Areas } from "@/screens/Areas";
+import { AreaDetail } from "@/screens/AreaDetail";
+import { Prep } from "@/screens/Prep";
 import { Demo } from "@/screens/Demo";
 import { Cleaning } from "@/screens/Cleaning";
 import { Equipment } from "@/screens/Equipment";
@@ -53,6 +55,22 @@ export function App() {
         element={
           <RequireAuth>
             <Areas />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/estimates/:id/areas/:areaId"
+        element={
+          <RequireAuth>
+            <AreaDetail />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/estimates/:id/prep"
+        element={
+          <RequireAuth>
+            <Prep />
           </RequireAuth>
         }
       />

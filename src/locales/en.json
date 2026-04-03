@@ -47,11 +47,34 @@
     "label": "Estimate sections",
     "setup": "Setup",
     "areas": "Areas",
+    "prep": "Prep",
     "demo": "Demo",
     "cleaning": "Cleaning",
     "equipment": "Equipment",
     "general": "General",
     "total": "Total"
+  },
+  "nav": {
+    "prep": "Prep Work",
+    "demo": "Demo",
+    "cleaning": "Cleaning",
+    "equipment": "Equipment",
+    "general": "General"
+  },
+  "areaDetail": {
+    "title": "{{areaName}}"
+  },
+  "prep": {
+    "title": "Prep Work",
+    "sections": {
+      "floorProtection": "Floor Protection",
+      "contents": "Contents",
+      "containment": "Containment",
+      "appliances": "Appliances",
+      "fixtures": "Fixtures"
+    },
+    "noAreas": "Add areas before setting up prep work.",
+    "areaItem": "{{count}} prep items"
   },
   "areas": {
     "title": "Areas",
@@ -99,6 +122,7 @@
     "title": "Demolition",
     "addWith": "Add with this",
     "addAll": "Add All",
+    "suggestedBadge": "Suggested",
     "sections": {
       "wallsStructure": "Walls & Structure",
       "trimFinishes": "Trim & Finishes",

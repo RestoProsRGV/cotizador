@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FileText, Grid2X2, Hammer, Sparkles, Wind, ListChecks, Receipt } from "lucide-react";
+import { FileText, Grid2X2, Hammer, Sparkles, Wind, ListChecks, Receipt, Wrench } from "lucide-react";
 
 interface NavTab {
   slug: string;
@@ -11,6 +11,7 @@ interface NavTab {
 const TABS: NavTab[] = [
   { slug: "setup", labelKey: "estimateNav.setup", Icon: FileText },
   { slug: "areas", labelKey: "estimateNav.areas", Icon: Grid2X2 },
+  { slug: "prep", labelKey: "estimateNav.prep", Icon: Wrench },
   { slug: "demo", labelKey: "estimateNav.demo", Icon: Hammer },
   { slug: "cleaning", labelKey: "estimateNav.cleaning", Icon: Sparkles },
   { slug: "equipment", labelKey: "estimateNav.equipment", Icon: Wind },
@@ -25,8 +26,10 @@ export function EstimateNav() {
   const { t } = useTranslation();
 
   function getActiveSlug() {
-    const parts = location.pathname.split("/");
-    return parts[parts.length - 1];
+    const path = location.pathname;
+    // /estimates/:id/areas/:areaId → match "areas"
+    const match = path.match(/\/estimates\/[^/]+\/([^/]+)/);
+    return match?.[1] ?? "";
   }
 
   const activeSlug = getActiveSlug();
