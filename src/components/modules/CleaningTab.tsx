@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Trash2, Plus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { generateCleaningItems, requiresContainment, type WaterCategory } from "@/lib/logic/cleaning";
+import { generateCleaningItems, type WaterCategory } from "@/lib/logic/cleaning";
 import { getPrice } from "@/constants/prices";
 
 interface LineItem {
@@ -96,21 +96,7 @@ export function CleaningTab({ estimateId, areaId, areaSf, category }: CleaningTa
         sort_order: idx,
       }));
 
-      // Add containment if needed
-      if (requiresContainment(cat)) {
-        toInsert.push({
-          estimate_id: estimateId,
-          area_id: areaId,
-          module: "CLN",
-          name: t("cleaning.containmentName"),
-          xactimate_code: "CLN-CONT",
-          unit: "SF",
-          quantity: areaSf,
-          unit_price: 0.5,
-          is_manual_override: false,
-          sort_order: toInsert.length,
-        });
-      }
+      // Note: Containment barrier belongs in Prep Work (PREP-CONTAIN-BARRIER), not Cleaning.
 
       if (toInsert.length > 0) {
         const { data: inserted } = await supabase

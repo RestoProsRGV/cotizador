@@ -143,3 +143,98 @@ describe("sumEquipment", () => {
     expect(sumEquipment([])).toEqual({ airMovers: 0, dehumidifiers: 0, airScrubbers: 0 });
   });
 });
+
+/**
+ * Per-area formula validation — matches real-world job scenarios.
+ * These tests document expected equipment counts for typical RestoPros jobs.
+ */
+describe("per-area dehumidifier calculations — real job dimensions", () => {
+  it("bathroom 10×8×8ft = 640 CF → 7 dehus", () => {
+    // 640 CF ÷ 100 = 6.4 → ceil = 7
+    expect(calcDehumidifiers({ length: 10, width: 8, height: 8 })).toBe(7);
+  });
+
+  it("bathroom 10×8×9ft = 720 CF → 8 dehus", () => {
+    // 720 CF ÷ 100 = 7.2 → ceil = 8
+    expect(calcDehumidifiers({ length: 10, width: 8, height: 9 })).toBe(8);
+  });
+
+  it("kitchen 12×10×8ft = 960 CF → 10 dehus", () => {
+    // 960 CF ÷ 100 = 9.6 → ceil = 10
+    expect(calcDehumidifiers({ length: 12, width: 10, height: 8 })).toBe(10);
+  });
+
+  it("kitchen 12×10×9ft = 1080 CF → 11 dehus", () => {
+    // 1080 CF ÷ 100 = 10.8 → ceil = 11
+    expect(calcDehumidifiers({ length: 12, width: 10, height: 9 })).toBe(11);
+  });
+
+  it("bathroom(8ft) + kitchen(8ft) summed = 7+10 = 17 total dehus", () => {
+    const bath = calcDehumidifiers({ length: 10, width: 8, height: 8 });   // 7
+    const kitchen = calcDehumidifiers({ length: 12, width: 10, height: 8 }); // 10
+    expect(bath + kitchen).toBe(17);
+  });
+
+  it("bathroom(9ft) + kitchen(9ft) summed = 8+11 = 19 total dehus (taller ceilings)", () => {
+    const bath = calcDehumidifiers({ length: 10, width: 8, height: 9 });     // 8
+    const kitchen = calcDehumidifiers({ length: 12, width: 10, height: 9 }); // 11
+    expect(bath + kitchen).toBe(19);
+  });
+});
+
+describe("air mover calculations — common job sizes", () => {
+  it("bathroom 80 SF → 2 air movers (ceil(80/50)=2 meets minimum)", () => {
+    expect(calcAirMovers(80)).toBe(2);
+  });
+
+  it("kitchen 120 SF → 3 air movers (ceil(120/50)=3)", () => {
+    expect(calcAirMovers(120)).toBe(3);
+  });
+
+  it("200 SF total job → 4 air movers when applied globally (ceil(200/50)=4)", () => {
+    expect(calcAirMovers(200)).toBe(4);
+  });
+
+  it("living room 300 SF → 6 air movers", () => {
+    expect(calcAirMovers(300)).toBe(6);
+  });
+
+  it("per-area sum for bathroom+kitchen = 2+3 = 5 (each area computed separately)", () => {
+    const bath = calcAirMovers(80);    // 2
+    const kitchen = calcAirMovers(120); // 3
+    expect(bath + kitchen).toBe(5);
+  });
+});
+
+describe("air scrubber calculations — typical Cat 2/3 jobs", () => {
+  it("200 SF job → 1 air scrubber (ceil(200/300)=1)", () => {
+    expect(calcAirScrubbers(200)).toBe(1);
+  });
+
+  it("400 SF job → 2 air scrubbers (ceil(400/300)=2)", () => {
+    expect(calcAirScrubbers(400)).toBe(2);
+  });
+});
+
+describe("sumEquipment — multi-area job totals", () => {
+  it("bathroom + kitchen with 8ft ceilings", () => {
+    const bath = calcEquipmentForChamber(
+      { affectedSf: 80, length: 10, width: 8, height: 8 },
+      true
+    );
+    const kitchen = calcEquipmentForChamber(
+      { affectedSf: 120, length: 12, width: 10, height: 8 },
+      true
+    );
+    const total = sumEquipment([bath, kitchen]);
+    expect(total.airMovers).toBe(2 + 3);      // 5
+    expect(total.dehumidifiers).toBe(7 + 10); // 17
+    expect(total.airScrubbers).toBe(1 + 1);   // 2 (one per area at this SF)
+  });
+
+  it("default 3-day billing: qty × 3 matches stored line-item quantity", () => {
+    const qty = calcDehumidifiers({ length: 10, width: 8, height: 8 }); // 7
+    const days = 3;
+    expect(qty * days).toBe(21); // 21 day-units stored in line_items.quantity
+  });
+});

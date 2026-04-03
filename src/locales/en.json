@@ -11,7 +11,9 @@
     "deleting": "Deleting...",
     "add": "Add",
     "close": "Close",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "allAreas": "All Areas",
+    "noAreas": "Add areas first to see items here."
   },
   "home": {
     "noEstimates": "No estimates yet",
