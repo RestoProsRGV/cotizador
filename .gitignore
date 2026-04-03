@@ -42,3 +42,4 @@ next-env.d.ts
 # gstack internals — do not commit
 .claude/skills/gstack/
 .gstack/
+.claude/settings.local.json
