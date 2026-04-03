@@ -1,0 +1,38 @@
+{
+  "common": {
+    "back": "Back",
+    "required": "Required",
+    "saving": "Saving...",
+    "error": "Something went wrong. Try again.",
+    "authRequired": "Sign in to create estimates."
+  },
+  "newEstimate": {
+    "title": "New Estimate",
+    "clientName": "Client Name",
+    "clientNamePlaceholder": "Full name",
+    "address": "Property Address",
+    "addressPlaceholder": "Street address",
+    "dateTime": "Date & Time",
+    "jobType": "Job Type",
+    "jobTypeWater": "Water",
+    "jobTypeMold": "Mold",
+    "jobTypeStorm": "Storm",
+    "waterCategory": "Water Category",
+    "cat1": "Cat 1",
+    "cat1Detail": "Clean water",
+    "cat2": "Cat 2",
+    "cat2Detail": "Grey water",
+    "cat3": "Cat 3",
+    "cat3Detail": "Black water",
+    "emergencyTitle": "Emergency Call",
+    "emergencyDetail": "After-hours detected — $250 fee will be added",
+    "submit": "Start Estimate",
+    "validationClientName": "Client name is required",
+    "validationAddress": "Property address is required",
+    "validationJobType": "Select a job type",
+    "validationCategory": "Select a water category"
+  },
+  "areas": {
+    "title": "Areas"
+  }
+}
