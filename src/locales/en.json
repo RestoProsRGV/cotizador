@@ -4,7 +4,18 @@
     "required": "Required",
     "saving": "Saving...",
     "error": "Something went wrong. Try again.",
-    "authRequired": "Sign in to create estimates."
+    "authRequired": "Sign in to create estimates.",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleting": "Deleting...",
+    "add": "Add",
+    "close": "Close",
+    "loading": "Loading..."
+  },
+  "home": {
+    "noEstimates": "No estimates yet",
+    "noEstimatesDetail": "Tap the button below to create your first estimate on-site."
   },
   "newEstimate": {
     "title": "New Estimate",
@@ -32,7 +43,108 @@
     "validationJobType": "Select a job type",
     "validationCategory": "Select a water category"
   },
+  "estimateNav": {
+    "label": "Estimate sections",
+    "setup": "Setup",
+    "areas": "Areas",
+    "demo": "Demo",
+    "cleaning": "Cleaning",
+    "equipment": "Equipment",
+    "general": "General",
+    "total": "Total"
+  },
   "areas": {
-    "title": "Areas"
+    "title": "Areas",
+    "addArea": "Add Area",
+    "editArea": "Edit Area",
+    "deleteArea": "Delete Area",
+    "presets": "Quick Select",
+    "roomName": "Room Name",
+    "roomNamePlaceholder": "e.g. Master Bathroom",
+    "dimensions": "Dimensions",
+    "length": "Length",
+    "width": "Width",
+    "height": "Height",
+    "totalSf": "Total SF",
+    "materialsLabel": "Materials Affected",
+    "emptyState": "No areas yet. Tap + to add the first room.",
+    "noDimensions": "No dimensions",
+    "errorNameRequired": "Room name is required"
+  },
+  "materials": {
+    "floor": "Floor",
+    "walls": "Walls",
+    "ceiling": "Ceiling",
+    "carpet": "Carpet",
+    "carpetPad": "Carpet Pad",
+    "tile": "Tile",
+    "wood": "Wood",
+    "laminate": "Laminate",
+    "vinylLvp": "Vinyl/LVP",
+    "drywall": "Drywall",
+    "paneling": "Paneling",
+    "insulation": "Insulation",
+    "acousticTile": "Acoustic Tile"
+  },
+  "demo": {
+    "title": "Demolition",
+    "addWith": "Add with this",
+    "addAll": "Add All",
+    "sections": {
+      "wallsStructure": "Walls & Structure",
+      "trimFinishes": "Trim & Finishes",
+      "flooring": "Flooring",
+      "cabinets": "Cabinets",
+      "plumbing": "Plumbing",
+      "ceiling": "Ceiling"
+    }
+  },
+  "cleaning": {
+    "title": "Cleaning",
+    "autoBadge": "AUTO",
+    "editedTooltip": "Manually edited",
+    "addItem": "+ Add Item",
+    "itemNamePlaceholder": "Item name",
+    "unit": "Unit",
+    "qty": "Qty",
+    "price": "Unit Price",
+    "subtotal": "Cleaning Total",
+    "containmentName": "Containment barrier setup"
+  },
+  "equipment": {
+    "title": "Equipment",
+    "airMover": "Air Movers",
+    "dehumidifier": "Dehumidifiers",
+    "airScrubber": "Air Scrubbers",
+    "iicrcNote": "Qty calculated using IICRC S500 formula",
+    "airMoverFormula": "1 per 50 SF · {{totalSf}} SF = {{qty}} units",
+    "dehumFormula": "1 per 100 CF of drying chamber = {{qty}} units",
+    "scrubberFormula": "1 per 300 SF · {{totalSf}} SF = {{qty}} units",
+    "units": "Units",
+    "days": "Days",
+    "dayUnit": "day",
+    "subtotal": "Equipment Total"
+  },
+  "general": {
+    "title": "General",
+    "autoBadge": "AUTO",
+    "emergencyBadge": "EMRG",
+    "subtotal": "General Total"
+  },
+  "total": {
+    "title": "Total",
+    "moduleWater": "Water",
+    "moduleGeneral": "General",
+    "moduleDemo": "Demo",
+    "moduleCleaning": "Cleaning",
+    "moduleEquipment": "Equipment",
+    "grandTotal": "Total",
+    "editEstimate": "Edit Estimate",
+    "presentToClient": "Present to Client"
+  },
+  "present": {
+    "scopeOfWork": "Scope of Work",
+    "validityNote": "This estimate is valid for 14 days.",
+    "approve": "Approve Estimate"
   }
 }
