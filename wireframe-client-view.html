@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>Cotizador - Client Estimate</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Inter, system-ui, sans-serif; background: #fff; color: #111827; max-width: 375px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* Logo header */
+  .logo-header { padding: 32px 24px 16px; text-align: center; border-bottom: 1px solid #e5e7eb; }
+  .company-logo { width: 140px; height: 48px; background: #0f3167; border-radius: 8px; margin: 0 auto 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; font-weight: 700; letter-spacing: 0.02em; }
+  .tech-info { font-size: 13px; color: #6b7280; }
+  .estimate-date { font-size: 13px; color: #6b7280; margin-top: 2px; }
+
+  /* Customer info */
+  .customer-section { padding: 20px 24px; background: #f9fafb; }
+  .customer-label { font-size: 12px; font-weight: 500; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+  .customer-name { font-size: 18px; font-weight: 600; }
+  .customer-address { font-size: 14px; color: #6b7280; margin-top: 2px; }
+
+  /* Scope summary */
+  .scope-section { padding: 20px 24px; }
+  .section-title { font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #0f3167; margin-bottom: 12px; }
+  .scope-text { font-size: 15px; line-height: 1.6; color: #374151; }
+
+  /* Photos */
+  .photos-section { padding: 0 24px 20px; }
+  .photos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .photo-placeholder { aspect-ratio: 4/3; background: #e5e7eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #6b7280; }
+
+  /* Line items */
+  .items-section { padding: 20px 24px; border-top: 1px solid #e5e7eb; }
+  .item-group { margin-bottom: 16px; }
+  .item-group-title { font-size: 13px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #e5e7eb; }
+  .line-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f3f4f6; }
+  .line-item:last-child { border-bottom: none; }
+  .line-desc { font-size: 14px; color: #374151; flex: 1; }
+  .line-qty { font-size: 13px; color: #6b7280; margin: 0 12px; white-space: nowrap; }
+  .line-price { font-size: 14px; font-weight: 500; color: #111827; white-space: nowrap; }
+
+  /* Totals */
+  .totals-section { padding: 20px 24px; background: #f9fafb; border-top: 2px solid #e5e7eb; }
+  .total-line { display: flex; justify-content: space-between; padding: 4px 0; }
+  .total-line.grand { padding-top: 12px; margin-top: 8px; border-top: 2px solid #111827; }
+  .total-line.grand .total-label { font-size: 18px; font-weight: 600; }
+  .total-line.grand .total-value { font-size: 24px; font-weight: 700; color: #111827; }
+  .total-label { font-size: 14px; color: #6b7280; }
+  .total-value { font-size: 14px; font-weight: 500; }
+  .discount { color: #059669; }
+
+  /* Footer */
+  .footer { padding: 20px 24px; text-align: center; }
+  .validity { font-size: 13px; color: #6b7280; margin-bottom: 16px; }
+  .approve-btn { width: 100%; height: 56px; background: #0f3167; color: #fff; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; }
+  .approve-btn:hover { background: #1648b8; }
+  .discuss-link { display: block; margin-top: 12px; font-size: 14px; color: #0f3167; text-decoration: none; }
+  .powered-by { font-size: 11px; color: #d1d5db; margin-top: 24px; }
+</style>
+</head>
+<body>
+  <!-- Company Logo -->
+  <div class="logo-header">
+    <div class="company-logo">RESTOPROS</div>
+    <div class="tech-info">Prepared by Alex Araujo</div>
+    <div class="estimate-date">April 2, 2026</div>
+  </div>
+
+  <!-- Customer -->
+  <div class="customer-section">
+    <div class="customer-label">Prepared for</div>
+    <div class="customer-name">Maria Rodriguez</div>
+    <div class="customer-address">1423 Oak Creek Dr, Houston TX 77024</div>
+  </div>
+
+  <!-- Scope Summary -->
+  <div class="scope-section">
+    <div class="section-title">Scope of Work</div>
+    <div class="scope-text">
+      Water damage mitigation for bathroom and hallway. Work includes removal of affected drywall, baseboard, and vanity fixtures, followed by structural drying with commercial equipment. Antimicrobial treatment of all affected surfaces.
+    </div>
+  </div>
+
+  <!-- Photos -->
+  <div class="photos-section">
+    <div class="photos-grid">
+      <div class="photo-placeholder">Bathroom damage</div>
+      <div class="photo-placeholder">Hallway moisture</div>
+    </div>
+  </div>
+
+  <!-- Line Items by Room -->
+  <div class="items-section">
+    <div class="item-group">
+      <div class="item-group-title">Bathroom</div>
+      <div class="line-item">
+        <div class="line-desc">Drywall removal</div>
+        <div class="line-qty">120 SF</div>
+        <div class="line-price">$420</div>
+      </div>
+      <div class="line-item">
+        <div class="line-desc">Vanity removal</div>
+        <div class="line-qty">1 EA</div>
+        <div class="line-price">$175</div>
+      </div>
+      <div class="line-item">
+        <div class="line-desc">Countertop detach</div>
+        <div class="line-qty">1 EA</div>
+        <div class="line-price">$85</div>
+      </div>
+      <div class="line-item">
+        <div class="line-desc">Sink &amp; faucet detach</div>
+        <div class="line-qty">1 EA</div>
+        <div class="line-price">$110</div>
+      </div>
+      <div class="line-item">
+        <div class="line-desc">Baseboard removal</div>
+        <div class="line-qty">24 LF</div>
+        <div class="line-price">$72</div>
+      </div>
+    </div>
+
+    <div class="item-group">
+      <div class="item-group-title">Hallway</div>
+      <div class="line-item">
+        <div class="line-desc">Carpet removal</div>
+        <div class="line-qty">80 SF</div>
+        <div class="line-price">$160</div>
+      </div>
+      <div class="line-item">
+        <div class="line-desc">Baseboard removal</div>
+        <div class="line-qty">32 LF</div>
+        <div class="line-price">$96</div>
+      </div>
+      <div class="line-item">
+        <div class="line-desc">Pad removal</div>
+        <div class="line-qty">80 SF</div>
+        <div class="line-price">$40</div>
+      </div>
+    </div>
+
+    <div class="item-group">
+      <div class="item-group-title">Equipment &amp; Cleaning</div>
+      <div class="line-item">
+        <div class="line-desc">Air movers (3 days)</div>
+        <div class="line-qty">4 EA</div>
+        <div class="line-price">$480</div>
+      </div>
+      <div class="line-item">
+        <div class="line-desc">Dehumidifier (3 days)</div>
+        <div class="line-qty">1 EA</div>
+        <div class="line-price">$375</div>
+      </div>
+      <div class="line-item">
+        <div class="line-desc">Antimicrobial treatment</div>
+        <div class="line-qty">200 SF</div>
+        <div class="line-price">$300</div>
+      </div>
+      <div class="line-item">
+        <div class="line-desc">Moisture monitoring</div>
+        <div class="line-qty">3 visits</div>
+        <div class="line-price">$225</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Totals -->
+  <div class="totals-section">
+    <div class="total-line">
+      <span class="total-label">Subtotal</span>
+      <span class="total-value">$2,538</span>
+    </div>
+    <div class="total-line">
+      <span class="total-label discount">On-site discount (5%)</span>
+      <span class="total-value discount">-$127</span>
+    </div>
+    <div class="total-line grand">
+      <span class="total-label">Total</span>
+      <span class="total-value">$2,411</span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="validity">This estimate is valid for 14 days</div>
+    <button class="approve-btn">Approve Estimate</button>
+    <a href="#" class="discuss-link">Have questions? Let's discuss</a>
+    <div class="powered-by">Powered by Cotizador</div>
+  </div>
+</body>
+</html>

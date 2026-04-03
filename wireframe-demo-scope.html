@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=375, initial-scale=1">
+<title>Cotizador - Demo Scope</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: Inter, system-ui, sans-serif; background: #f0f0f0; color: #111827; max-width: 375px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; }
+
+  .header { background: #0f3167; color: #fff; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
+  .header .back { font-size: 14px; opacity: 0.8; cursor: pointer; }
+  .header h1 { font-size: 18px; font-weight: 600; flex: 1; }
+  .header .room-badge { background: rgba(255,255,255,0.2); padding: 4px 10px; border-radius: 12px; font-size: 12px; }
+
+  .room-tabs { display: flex; background: #fff; border-bottom: 1px solid #d1d5db; overflow-x: auto; }
+  .room-tab { padding: 12px 16px; font-size: 13px; font-weight: 500; color: #6b7280; white-space: nowrap; border-bottom: 2px solid transparent; cursor: pointer; }
+  .room-tab.active { color: #0f3167; border-bottom-color: #0f3167; }
+  .room-tab .count { background: #e8f0fa; color: #0f3167; font-size: 11px; padding: 1px 6px; border-radius: 8px; margin-left: 4px; }
+
+  .scope-section { background: #fff; margin: 8px 12px; border-radius: 8px; border: 1px solid #d1d5db; }
+  .scope-header { padding: 12px 16px; border-bottom: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center; }
+  .scope-title { font-size: 14px; font-weight: 600; color: #374151; }
+  .scope-toggle { font-size: 12px; color: #0f3167; font-weight: 500; cursor: pointer; }
+
+  .scope-item { display: flex; align-items: center; padding: 12px 16px; border-bottom: 1px solid #f3f4f6; min-height: 52px; }
+  .scope-item:last-child { border-bottom: none; }
+  .scope-check { width: 22px; height: 22px; margin-right: 12px; accent-color: #0f3167; flex-shrink: 0; }
+  .scope-name { flex: 1; }
+  .scope-name .label { font-size: 14px; font-weight: 500; color: #111827; }
+  .scope-name .desc { font-size: 12px; color: #6b7280; margin-top: 1px; }
+  .scope-qty { display: flex; align-items: center; gap: 4px; }
+  .qty-input { width: 56px; height: 36px; border: 1px solid #d1d5db; border-radius: 6px; text-align: center; font-size: 14px; font-family: inherit; }
+  .qty-unit { font-size: 12px; color: #6b7280; min-width: 24px; }
+
+  .suggested-section { background: #fff; margin: 8px 12px; border-radius: 8px; border: 1px dashed #83bde8; }
+  .suggested-header { padding: 12px 16px; border-bottom: 1px solid #e8f0fa; display: flex; align-items: center; gap: 8px; }
+  .suggested-header .badge { background: #83bde8; color: #0f3167; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; }
+  .suggested-header .title { font-size: 13px; font-weight: 500; color: #0f3167; }
+
+  .bottom-bar { margin-top: auto; background: #fff; border-top: 1px solid #d1d5db; padding: 12px 16px; }
+  .subtotal { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .subtotal-label { font-size: 13px; color: #6b7280; }
+  .subtotal-value { font-size: 16px; font-weight: 600; }
+  .total-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-top: 8px; border-top: 1px solid #e5e7eb; }
+  .total-label { font-size: 14px; font-weight: 500; }
+  .total-value { font-size: 24px; font-weight: 700; }
+  .btn-row { display: flex; gap: 8px; }
+  .btn { height: 48px; border-radius: 8px; font-size: 14px; font-weight: 500; border: none; cursor: pointer; flex: 1; display: flex; align-items: center; justify-content: center; font-family: inherit; }
+  .btn-secondary { background: #fff; border: 1px solid #d1d5db; color: #111827; }
+  .btn-primary { background: #0f3167; color: #fff; }
+</style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <span class="back">←</span>
+    <h1>Demo Scope</h1>
+    <span class="room-badge">Bathroom</span>
+  </div>
+
+  <!-- Room tabs -->
+  <div class="room-tabs">
+    <div class="room-tab active">Bathroom <span class="count">6</span></div>
+    <div class="room-tab">Hallway <span class="count">3</span></div>
+    <div class="room-tab" style="color: #9ca3af;">+ Add Room</div>
+  </div>
+
+  <!-- Demolition items -->
+  <div class="scope-section">
+    <div class="scope-header">
+      <span class="scope-title">Demolition</span>
+      <span class="scope-toggle">Select All</span>
+    </div>
+    <div class="scope-item">
+      <input type="checkbox" class="scope-check" checked>
+      <div class="scope-name">
+        <div class="label">Drywall Removal</div>
+        <div class="desc">Remove affected drywall to studs</div>
+      </div>
+      <div class="scope-qty">
+        <input type="text" class="qty-input" value="120">
+        <span class="qty-unit">SF</span>
+      </div>
+    </div>
+    <div class="scope-item">
+      <input type="checkbox" class="scope-check" checked>
+      <div class="scope-name">
+        <div class="label">Baseboard Removal</div>
+        <div class="desc">Remove and dispose baseboards</div>
+      </div>
+      <div class="scope-qty">
+        <input type="text" class="qty-input" value="24">
+        <span class="qty-unit">LF</span>
+      </div>
+    </div>
+    <div class="scope-item">
+      <input type="checkbox" class="scope-check" checked>
+      <div class="scope-name">
+        <div class="label">Vanity Removal</div>
+      </div>
+      <div class="scope-qty">
+        <input type="text" class="qty-input" value="1">
+        <span class="qty-unit">EA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Co-occurrence suggestions -->
+  <div class="suggested-section">
+    <div class="suggested-header">
+      <span class="badge">AUTO</span>
+      <span class="title">Related items (vanity selected)</span>
+    </div>
+    <div class="scope-item">
+      <input type="checkbox" class="scope-check" checked>
+      <div class="scope-name">
+        <div class="label">Countertop Detach</div>
+      </div>
+      <div class="scope-qty">
+        <input type="text" class="qty-input" value="1">
+        <span class="qty-unit">EA</span>
+      </div>
+    </div>
+    <div class="scope-item">
+      <input type="checkbox" class="scope-check" checked>
+      <div class="scope-name">
+        <div class="label">Sink Detach</div>
+      </div>
+      <div class="scope-qty">
+        <input type="text" class="qty-input" value="1">
+        <span class="qty-unit">EA</span>
+      </div>
+    </div>
+    <div class="scope-item">
+      <input type="checkbox" class="scope-check" checked>
+      <div class="scope-name">
+        <div class="label">Faucet Detach</div>
+      </div>
+      <div class="scope-qty">
+        <input type="text" class="qty-input" value="1">
+        <span class="qty-unit">EA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Equipment section -->
+  <div class="scope-section">
+    <div class="scope-header">
+      <span class="scope-title">Equipment & Drying</span>
+      <span class="scope-toggle">Select All</span>
+    </div>
+    <div class="scope-item">
+      <input type="checkbox" class="scope-check" checked>
+      <div class="scope-name">
+        <div class="label">Air Movers</div>
+        <div class="desc">3-day drying cycle</div>
+      </div>
+      <div class="scope-qty">
+        <input type="text" class="qty-input" value="4">
+        <span class="qty-unit">EA</span>
+      </div>
+    </div>
+    <div class="scope-item">
+      <input type="checkbox" class="scope-check" checked>
+      <div class="scope-name">
+        <div class="label">Dehumidifier</div>
+        <div class="desc">3-day drying cycle</div>
+      </div>
+      <div class="scope-qty">
+        <input type="text" class="qty-input" value="1">
+        <span class="qty-unit">EA</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cleaning section -->
+  <div class="scope-section">
+    <div class="scope-header">
+      <span class="scope-title">Cleaning & Treatment</span>
+      <span class="scope-toggle">Select All</span>
+    </div>
+    <div class="scope-item">
+      <input type="checkbox" class="scope-check" checked>
+      <div class="scope-name">
+        <div class="label">Antimicrobial Treatment</div>
+      </div>
+      <div class="scope-qty">
+        <input type="text" class="qty-input" value="200">
+        <span class="qty-unit">SF</span>
+      </div>
+    </div>
+    <div class="scope-item">
+      <input type="checkbox" class="scope-check">
+      <div class="scope-name">
+        <div class="label">HEPA Vacuuming</div>
+        <div class="desc" style="color: #d97706;">Recommended for Cat 2+</div>
+      </div>
+      <div class="scope-qty">
+        <input type="text" class="qty-input" value="200">
+        <span class="qty-unit">SF</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
+    <div class="subtotal">
+      <span class="subtotal-label">Bathroom (6 items)</span>
+      <span class="subtotal-value">$1,262</span>
+    </div>
+    <div class="total-row">
+      <span class="total-label">Estimate Total</span>
+      <span class="total-value">$2,538</span>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary">+ Add Room</button>
+      <button class="btn btn-primary">Review →</button>
+    </div>
+  </div>
+</body>
+</html>
