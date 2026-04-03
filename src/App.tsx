@@ -2,6 +2,13 @@ import { Routes, Route, Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Plus, ClipboardList } from "lucide-react";
 import { NewEstimate } from "@/screens/NewEstimate";
+import { Areas } from "@/screens/Areas";
+import { Demo } from "@/screens/Demo";
+import { Cleaning } from "@/screens/Cleaning";
+import { Equipment } from "@/screens/Equipment";
+import { General } from "@/screens/General";
+import { Total } from "@/screens/Total";
+import { Present } from "@/screens/Present";
 
 function Home() {
   const { t } = useTranslation();
@@ -43,10 +50,10 @@ function Home() {
             className="text-base font-semibold"
             style={{ color: "var(--color-text-primary)" }}
           >
-            No estimates yet
+            {t("home.noEstimates")}
           </p>
           <p className="mt-1 text-sm" style={{ color: "var(--color-text-secondary)" }}>
-            Tap the button below to create your first estimate on-site.
+            {t("home.noEstimatesDetail")}
           </p>
         </div>
         <Link
@@ -71,30 +78,18 @@ function Home() {
   );
 }
 
-function AreasPlaceholder() {
-  const { t } = useTranslation();
-  return (
-    <div
-      className="flex min-h-screen flex-col items-center justify-center gap-4"
-      style={{ backgroundColor: "var(--color-background)" }}
-    >
-      <ClipboardList size={40} style={{ color: "var(--color-primary)" }} />
-      <p className="text-base font-semibold" style={{ color: "var(--color-text-primary)" }}>
-        {t("areas.title")}
-      </p>
-      <p className="text-sm" style={{ color: "var(--color-text-secondary)" }}>
-        Module 2 — coming next
-      </p>
-    </div>
-  );
-}
-
 export function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
       <Route path="/estimates/new" element={<NewEstimate />} />
-      <Route path="/estimates/:id/areas" element={<AreasPlaceholder />} />
+      <Route path="/estimates/:id/areas" element={<Areas />} />
+      <Route path="/estimates/:id/demo" element={<Demo />} />
+      <Route path="/estimates/:id/cleaning" element={<Cleaning />} />
+      <Route path="/estimates/:id/equipment" element={<Equipment />} />
+      <Route path="/estimates/:id/general" element={<General />} />
+      <Route path="/estimates/:id/total" element={<Total />} />
+      <Route path="/estimates/:id/present" element={<Present />} />
     </Routes>
   );
 }
