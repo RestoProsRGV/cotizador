@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Plus, Trash2 } from "lucide-react";
@@ -17,14 +17,20 @@ interface Area {
   width: number;
   height: number;
   materials: string[];
+  material_note: string | null;
 }
 
 interface AreaForm {
   name: string;
-  length: string;
-  width: string;
-  height: string;
+  lengthFt: string;
+  lengthIn: string;
+  widthFt: string;
+  widthIn: string;
+  heightFt: string;
+  heightIn: string;
   materials: MaterialsValue;
+  materialNote: string;
+  showNoteField: boolean;
 }
 
 const ROOM_PRESETS = [
@@ -40,13 +46,28 @@ const ROOM_PRESETS = [
   "Other",
 ];
 
+function toDecimalFt(ft: string, inches: string): number {
+  return (parseFloat(ft) || 0) + (parseFloat(inches) || 0) / 12;
+}
+
+function decimalToFtIn(decimal: number): { ft: string; inches: string } {
+  const ft = Math.floor(decimal);
+  const inches = Math.round((decimal - ft) * 12);
+  return { ft: ft > 0 ? String(ft) : "", inches: inches > 0 ? String(inches) : "" };
+}
+
 function emptyForm(): AreaForm {
   return {
     name: "",
-    length: "",
-    width: "",
-    height: "",
+    lengthFt: "",
+    lengthIn: "",
+    widthFt: "",
+    widthIn: "",
+    heightFt: "",
+    heightIn: "",
     materials: { floor: [], walls: [], ceiling: [] },
+    materialNote: "",
+    showNoteField: false,
   };
 }
 
@@ -78,6 +99,77 @@ function getMaterialDots(materials: string[]): { floor: boolean; walls: boolean;
   };
 }
 
+// DimensionPair input component
+interface DimPairProps {
+  label: string;
+  ftValue: string;
+  inValue: string;
+  ftRef: React.RefObject<HTMLInputElement | null>;
+  inRef: React.RefObject<HTMLInputElement | null>;
+  onFtChange: (v: string) => void;
+  onInChange: (v: string) => void;
+}
+
+function DimensionPair({ label, ftValue, inValue, ftRef, inRef, onFtChange, onInChange }: DimPairProps) {
+  const inputBase: React.CSSProperties = {
+    height: "48px",
+    border: "1px solid var(--color-border)",
+    borderRadius: "4px",
+    fontSize: "16px",
+    textAlign: "center",
+    backgroundColor: "var(--color-surface)",
+    color: "var(--color-text-primary)",
+    padding: "0 4px",
+    boxSizing: "border-box",
+  };
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: "4px", flexShrink: 0 }}>
+      <span style={{ fontSize: "11px", color: "var(--color-text-secondary)", whiteSpace: "nowrap" }}>
+        {label}
+      </span>
+      <div style={{ display: "flex", alignItems: "center", gap: "3px" }}>
+        <input
+          ref={ftRef}
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          value={ftValue}
+          onChange={(e) => {
+            const v = e.target.value.replace(/\D/g, "").slice(0, 3);
+            onFtChange(v);
+            if (v.length >= 2) {
+              inRef.current?.focus();
+              inRef.current?.select();
+            }
+          }}
+          placeholder="0"
+          style={{ ...inputBase, width: "44px" }}
+          aria-label={`${label} feet`}
+        />
+        <span style={{ fontSize: "11px", color: "var(--color-text-secondary)" }}>ft</span>
+        <input
+          ref={inRef}
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          value={inValue}
+          onChange={(e) => {
+            const raw = e.target.value.replace(/\D/g, "");
+            if (raw === "" || parseInt(raw) <= 11) {
+              onInChange(raw);
+            }
+          }}
+          placeholder="0"
+          style={{ ...inputBase, width: "36px" }}
+          aria-label={`${label} inches`}
+        />
+        <span style={{ fontSize: "11px", color: "var(--color-text-secondary)" }}>in</span>
+      </div>
+    </div>
+  );
+}
+
 export function Areas() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -93,6 +185,14 @@ export function Areas() {
   const [error, setError] = useState<string | null>(null);
   const [authError, setAuthError] = useState(false);
 
+  // Dimension input refs for auto-advance
+  const lengthFtRef = useRef<HTMLInputElement>(null);
+  const lengthInRef = useRef<HTMLInputElement>(null);
+  const widthFtRef = useRef<HTMLInputElement>(null);
+  const widthInRef = useRef<HTMLInputElement>(null);
+  const heightFtRef = useRef<HTMLInputElement>(null);
+  const heightInRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     loadAreas();
   }, [id]);
@@ -105,16 +205,13 @@ export function Areas() {
       setLoading(false);
       return;
     }
-
     const { data, error: err } = await supabase
       .from("areas")
       .select("*")
       .eq("estimate_id", id)
       .order("created_at", { ascending: true });
 
-    if (!err && data) {
-      setAreas(data as Area[]);
-    }
+    if (!err && data) setAreas(data as Area[]);
     setLoading(false);
   }
 
@@ -127,12 +224,20 @@ export function Areas() {
 
   function openEditSheet(area: Area) {
     setEditingArea(area);
+    const lDec = decimalToFtIn(area.length ?? 0);
+    const wDec = decimalToFtIn(area.width ?? 0);
+    const hDec = decimalToFtIn(area.height ?? 0);
     setForm({
       name: area.name,
-      length: area.length ? String(area.length) : "",
-      width: area.width ? String(area.width) : "",
-      height: area.height ? String(area.height) : "",
+      lengthFt: lDec.ft,
+      lengthIn: lDec.inches,
+      widthFt: wDec.ft,
+      widthIn: wDec.inches,
+      heightFt: hDec.ft,
+      heightIn: hDec.inches,
       materials: arrayToMaterials(area.materials),
+      materialNote: area.material_note ?? "",
+      showNoteField: !!area.material_note,
     });
     setError(null);
     setSheetOpen(true);
@@ -150,8 +255,8 @@ export function Areas() {
   }
 
   const totalSf = (() => {
-    const l = parseFloat(form.length) || 0;
-    const w = parseFloat(form.width) || 0;
+    const l = toDecimalFt(form.lengthFt, form.lengthIn);
+    const w = toDecimalFt(form.widthFt, form.widthIn);
     return l * w;
   })();
 
@@ -166,18 +271,16 @@ export function Areas() {
     const payload = {
       estimate_id: id,
       name: form.name.trim(),
-      length: parseFloat(form.length) || 0,
-      width: parseFloat(form.width) || 0,
-      height: parseFloat(form.height) || 0,
+      length: toDecimalFt(form.lengthFt, form.lengthIn),
+      width: toDecimalFt(form.widthFt, form.widthIn),
+      height: toDecimalFt(form.heightFt, form.heightIn),
       materials: materialsToArray(form.materials),
+      material_note: form.materialNote.trim() || null,
     };
 
     try {
       if (editingArea) {
-        const { error: err } = await supabase
-          .from("areas")
-          .update(payload)
-          .eq("id", editingArea.id);
+        const { error: err } = await supabase.from("areas").update(payload).eq("id", editingArea.id);
         if (err) throw err;
       } else {
         const { error: err } = await supabase.from("areas").insert(payload);
@@ -196,10 +299,7 @@ export function Areas() {
     if (!editingArea) return;
     setDeleting(true);
     try {
-      const { error: err } = await supabase
-        .from("areas")
-        .delete()
-        .eq("id", editingArea.id);
+      const { error: err } = await supabase.from("areas").delete().eq("id", editingArea.id);
       if (err) throw err;
       await loadAreas();
       closeSheet();
@@ -212,28 +312,10 @@ export function Areas() {
 
   if (authError) {
     return (
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          minHeight: "100vh",
-          backgroundColor: "var(--color-background)",
-        }}
-      >
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "var(--color-background)" }}>
         <AppHeader title={t("areas.title")} onBack={() => navigate(-1)} />
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            padding: "16px",
-            textAlign: "center",
-          }}
-        >
-          <p style={{ color: "var(--color-text-secondary)", fontSize: "14px" }}>
-            {t("common.authRequired")}
-          </p>
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px", textAlign: "center" }}>
+          <p style={{ color: "var(--color-text-secondary)", fontSize: "14px" }}>{t("common.authRequired")}</p>
         </div>
         <EstimateNav />
       </div>
@@ -241,46 +323,22 @@ export function Areas() {
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        minHeight: "100vh",
-        backgroundColor: "var(--color-background)",
-      }}
-    >
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "var(--color-background)" }}>
       <AppHeader title={t("areas.title")} onBack={() => navigate(-1)} />
 
       <main style={{ flex: 1, padding: "16px", paddingBottom: "16px" }}>
         {loading ? (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "8px",
-            }}
-          >
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
-                style={{
-                  height: "120px",
-                  borderRadius: "8px",
-                  backgroundColor: "var(--color-border)",
-                  animation: "pulse 1.5s infinite",
-                }}
+                style={{ height: "120px", borderRadius: "8px", backgroundColor: "var(--color-border)", animation: "pulse 1.5s infinite" }}
               />
             ))}
           </div>
         ) : (
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap: "8px",
-            }}
-          >
-            {/* Add Area card — always first */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
+            {/* Add Area card */}
             <button
               type="button"
               onClick={openAddSheet}
@@ -311,13 +369,7 @@ export function Areas() {
               >
                 <Plus size={18} style={{ color: "var(--color-primary)" }} aria-hidden />
               </div>
-              <span
-                style={{
-                  fontSize: "13px",
-                  fontWeight: 600,
-                  color: "var(--color-primary)",
-                }}
-              >
+              <span style={{ fontSize: "13px", fontWeight: 600, color: "var(--color-primary)" }}>
                 {t("areas.addArea")}
               </span>
             </button>
@@ -346,66 +398,32 @@ export function Areas() {
                     overflow: "hidden",
                   }}
                 >
-                  {/* Material dots top-right */}
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: "8px",
-                      right: "8px",
-                      display: "flex",
-                      gap: "4px",
-                    }}
-                  >
-                    {dots.floor && (
+                  {/* Top-right: material dots + note indicator */}
+                  <div style={{ position: "absolute", top: "8px", right: "8px", display: "flex", gap: "4px", alignItems: "center" }}>
+                    {area.material_note && (
                       <span
-                        title={t("materials.floor")}
-                        style={{
-                          width: "8px",
-                          height: "8px",
-                          borderRadius: "50%",
-                          backgroundColor: "var(--color-primary)",
-                        }}
-                      />
+                        title={t("areas.materialNoteTooltip", { note: area.material_note })}
+                        style={{ fontSize: "14px", lineHeight: 1 }}
+                        aria-label={t("areas.materialNoteTooltip", { note: area.material_note })}
+                      >
+                        📝
+                      </span>
+                    )}
+                    {dots.floor && (
+                      <span title={t("materials.floor")} style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--color-primary)", display: "block" }} />
                     )}
                     {dots.walls && (
-                      <span
-                        title={t("materials.walls")}
-                        style={{
-                          width: "8px",
-                          height: "8px",
-                          borderRadius: "50%",
-                          backgroundColor: "var(--color-success)",
-                        }}
-                      />
+                      <span title={t("materials.walls")} style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--color-success)", display: "block" }} />
                     )}
                     {dots.ceiling && (
-                      <span
-                        title={t("materials.ceiling")}
-                        style={{
-                          width: "8px",
-                          height: "8px",
-                          borderRadius: "50%",
-                          backgroundColor: "var(--color-warning)",
-                        }}
-                      />
+                      <span title={t("materials.ceiling")} style={{ width: "8px", height: "8px", borderRadius: "50%", backgroundColor: "var(--color-warning)", display: "block" }} />
                     )}
                   </div>
-                  <span
-                    style={{
-                      fontSize: "14px",
-                      fontWeight: 600,
-                      color: "var(--color-text-primary)",
-                      display: "block",
-                    }}
-                  >
+
+                  <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-text-primary)", display: "block" }}>
                     {area.name}
                   </span>
-                  <span
-                    style={{
-                      fontSize: "12px",
-                      color: "var(--color-text-secondary)",
-                    }}
-                  >
+                  <span style={{ fontSize: "12px", color: "var(--color-text-secondary)" }}>
                     {sf > 0 ? `${Math.round(sf)} SF` : t("areas.noDimensions")}
                   </span>
                 </button>
@@ -415,14 +433,7 @@ export function Areas() {
         )}
 
         {!loading && areas.length === 0 && (
-          <p
-            style={{
-              textAlign: "center",
-              color: "var(--color-text-secondary)",
-              fontSize: "14px",
-              marginTop: "24px",
-            }}
-          >
+          <p style={{ textAlign: "center", color: "var(--color-text-secondary)", fontSize: "14px", marginTop: "24px" }}>
             {t("areas.emptyState")}
           </p>
         )}
@@ -431,36 +442,14 @@ export function Areas() {
       <EstimateNav />
 
       {/* Area form bottom sheet */}
-      <BottomSheet
-        open={sheetOpen}
-        onClose={closeSheet}
-        title={editingArea ? t("areas.editArea") : t("areas.addArea")}
-      >
+      <BottomSheet open={sheetOpen} onClose={closeSheet} title={editingArea ? t("areas.editArea") : t("areas.addArea")}>
         <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "20px" }}>
           {/* Room presets */}
           <div>
-            <span
-              style={{
-                fontSize: "11px",
-                fontWeight: 500,
-                color: "var(--color-text-secondary)",
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                display: "block",
-                marginBottom: "8px",
-              }}
-            >
+            <span style={{ fontSize: "11px", fontWeight: 500, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "8px" }}>
               {t("areas.presets")}
             </span>
-            <div
-              style={{
-                display: "flex",
-                gap: "8px",
-                overflowX: "auto",
-                paddingBottom: "4px",
-                scrollbarWidth: "none",
-              }}
-            >
+            <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "4px", scrollbarWidth: "none" }}>
               {ROOM_PRESETS.map((preset) => (
                 <button
                   key={preset}
@@ -474,14 +463,8 @@ export function Areas() {
                     borderRadius: "16px",
                     fontSize: "13px",
                     border: "1px solid var(--color-border)",
-                    backgroundColor:
-                      form.name === preset
-                        ? "var(--color-primary)"
-                        : "var(--color-background)",
-                    color:
-                      form.name === preset
-                        ? "var(--color-text-on-primary)"
-                        : "var(--color-text-primary)",
+                    backgroundColor: form.name === preset ? "var(--color-primary)" : "var(--color-background)",
+                    color: form.name === preset ? "var(--color-text-on-primary)" : "var(--color-text-primary)",
                     cursor: "pointer",
                     whiteSpace: "nowrap",
                   }}
@@ -500,181 +483,113 @@ export function Areas() {
             placeholder={t("areas.roomNamePlaceholder")}
           />
 
-          {/* Dimensions row */}
+          {/* Dimensions */}
           <div>
-            <span
-              style={{
-                fontSize: "11px",
-                fontWeight: 500,
-                color: "var(--color-text-secondary)",
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                display: "block",
-                marginBottom: "8px",
-              }}
-            >
+            <span style={{ fontSize: "11px", fontWeight: 500, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "8px" }}>
               {t("areas.dimensions")}
             </span>
-            <div style={{ display: "flex", gap: "8px", alignItems: "flex-end" }}>
-              <div style={{ flex: 1 }}>
-                <label
-                  style={{
-                    fontSize: "11px",
-                    color: "var(--color-text-secondary)",
-                    display: "block",
-                    marginBottom: "4px",
-                  }}
-                >
-                  {t("areas.length")} (ft)
-                </label>
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  min="0"
-                  value={form.length}
-                  onChange={(e) => setForm((f) => ({ ...f, length: e.target.value }))}
-                  placeholder="0"
-                  style={{
-                    width: "100%",
-                    height: "48px",
-                    border: "1px solid var(--color-border)",
-                    borderRadius: "4px",
-                    padding: "0 8px",
-                    fontSize: "16px",
-                    backgroundColor: "var(--color-surface)",
-                    color: "var(--color-text-primary)",
-                  }}
+            <div style={{ overflowX: "auto", paddingBottom: "4px" }}>
+              <div style={{ display: "flex", gap: "8px", alignItems: "flex-end", minWidth: "max-content" }}>
+                <DimensionPair
+                  label={t("areas.length")}
+                  ftValue={form.lengthFt}
+                  inValue={form.lengthIn}
+                  ftRef={lengthFtRef}
+                  inRef={lengthInRef}
+                  onFtChange={(v) => setForm((f) => ({ ...f, lengthFt: v }))}
+                  onInChange={(v) => setForm((f) => ({ ...f, lengthIn: v }))}
                 />
-              </div>
-              <span
-                style={{
-                  color: "var(--color-text-secondary)",
-                  fontSize: "18px",
-                  paddingBottom: "12px",
-                }}
-              >
-                ×
-              </span>
-              <div style={{ flex: 1 }}>
-                <label
-                  style={{
-                    fontSize: "11px",
-                    color: "var(--color-text-secondary)",
-                    display: "block",
-                    marginBottom: "4px",
-                  }}
-                >
-                  {t("areas.width")} (ft)
-                </label>
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  min="0"
-                  value={form.width}
-                  onChange={(e) => setForm((f) => ({ ...f, width: e.target.value }))}
-                  placeholder="0"
-                  style={{
-                    width: "100%",
-                    height: "48px",
-                    border: "1px solid var(--color-border)",
-                    borderRadius: "4px",
-                    padding: "0 8px",
-                    fontSize: "16px",
-                    backgroundColor: "var(--color-surface)",
-                    color: "var(--color-text-primary)",
-                  }}
+                <span style={{ color: "var(--color-text-secondary)", fontSize: "18px", paddingBottom: "13px" }}>×</span>
+                <DimensionPair
+                  label={t("areas.width")}
+                  ftValue={form.widthFt}
+                  inValue={form.widthIn}
+                  ftRef={widthFtRef}
+                  inRef={widthInRef}
+                  onFtChange={(v) => setForm((f) => ({ ...f, widthFt: v }))}
+                  onInChange={(v) => setForm((f) => ({ ...f, widthIn: v }))}
                 />
-              </div>
-              <span
-                style={{
-                  color: "var(--color-text-secondary)",
-                  fontSize: "18px",
-                  paddingBottom: "12px",
-                }}
-              >
-                ×
-              </span>
-              <div style={{ flex: 1 }}>
-                <label
-                  style={{
-                    fontSize: "11px",
-                    color: "var(--color-text-secondary)",
-                    display: "block",
-                    marginBottom: "4px",
-                  }}
-                >
-                  {t("areas.height")} (ft)
-                </label>
-                <input
-                  type="number"
-                  inputMode="decimal"
-                  min="0"
-                  value={form.height}
-                  onChange={(e) => setForm((f) => ({ ...f, height: e.target.value }))}
-                  placeholder="0"
-                  style={{
-                    width: "100%",
-                    height: "48px",
-                    border: "1px solid var(--color-border)",
-                    borderRadius: "4px",
-                    padding: "0 8px",
-                    fontSize: "16px",
-                    backgroundColor: "var(--color-surface)",
-                    color: "var(--color-text-primary)",
-                  }}
+                <span style={{ color: "var(--color-text-secondary)", fontSize: "18px", paddingBottom: "13px" }}>×</span>
+                <DimensionPair
+                  label={t("areas.height")}
+                  ftValue={form.heightFt}
+                  inValue={form.heightIn}
+                  ftRef={heightFtRef}
+                  inRef={heightInRef}
+                  onFtChange={(v) => setForm((f) => ({ ...f, heightFt: v }))}
+                  onInChange={(v) => setForm((f) => ({ ...f, heightIn: v }))}
                 />
               </div>
             </div>
-            {/* Total SF */}
-            <p
-              style={{
-                marginTop: "8px",
-                fontSize: "13px",
-                color: "var(--color-text-secondary)",
-              }}
-            >
-              {t("areas.totalSf")}: <strong style={{ color: "var(--color-text-primary)" }}>{Math.round(totalSf)} SF</strong>
+            <p style={{ marginTop: "8px", fontSize: "13px", color: "var(--color-text-secondary)" }}>
+              {t("areas.totalSf")}: <strong style={{ color: "var(--color-text-primary)" }}>{totalSf > 0 ? totalSf.toFixed(1) : "0"} SF</strong>
             </p>
           </div>
 
           {/* Materials */}
           <div>
-            <span
-              style={{
-                fontSize: "11px",
-                fontWeight: 500,
-                color: "var(--color-text-secondary)",
-                textTransform: "uppercase",
-                letterSpacing: "0.05em",
-                display: "block",
-                marginBottom: "12px",
-              }}
-            >
+            <span style={{ fontSize: "11px", fontWeight: 500, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em", display: "block", marginBottom: "12px" }}>
               {t("areas.materialsLabel")}
             </span>
             <MaterialChips
               value={form.materials}
               onChange={(m) => setForm((f) => ({ ...f, materials: m }))}
             />
+
+            {/* Material note trigger */}
+            {!form.showNoteField ? (
+              <button
+                type="button"
+                onClick={() => setForm((f) => ({ ...f, showNoteField: true }))}
+                style={{
+                  marginTop: "12px",
+                  background: "none",
+                  border: "none",
+                  padding: 0,
+                  cursor: "pointer",
+                  fontSize: "12px",
+                  color: "var(--color-text-secondary)",
+                  textDecoration: "underline",
+                  textUnderlineOffset: "2px",
+                }}
+              >
+                {t("areas.materialNotePrompt")}
+              </button>
+            ) : (
+              <div style={{ marginTop: "12px", display: "flex", flexDirection: "column", gap: "6px" }}>
+                <label style={{ fontSize: "11px", fontWeight: 500, color: "var(--color-text-secondary)", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+                  {t("areas.materialNoteLabel")}
+                </label>
+                <textarea
+                  value={form.materialNote}
+                  onChange={(e) => setForm((f) => ({ ...f, materialNote: e.target.value }))}
+                  placeholder={t("areas.materialNotePlaceholder")}
+                  rows={3}
+                  style={{
+                    width: "100%",
+                    border: "1px solid var(--color-border)",
+                    borderRadius: "4px",
+                    padding: "8px 12px",
+                    fontSize: "14px",
+                    backgroundColor: "var(--color-surface)",
+                    color: "var(--color-text-primary)",
+                    resize: "vertical",
+                    fontFamily: "inherit",
+                    boxSizing: "border-box",
+                  }}
+                />
+              </div>
+            )}
           </div>
 
           {/* Error */}
           {error && (
-            <p
-              style={{
-                fontSize: "13px",
-                color: "var(--color-error)",
-                padding: "8px 12px",
-                backgroundColor: "var(--color-error-bg)",
-                borderRadius: "4px",
-              }}
-              role="alert"
-            >
+            <p style={{ fontSize: "13px", color: "var(--color-error)", padding: "8px 12px", backgroundColor: "var(--color-error-bg)", borderRadius: "4px" }} role="alert">
               {error}
             </p>
           )}
 
-          {/* Buttons */}
+          {/* Action buttons */}
           <div style={{ display: "flex", flexDirection: "column", gap: "8px", paddingBottom: "16px" }}>
             <button
               type="button"

@@ -69,7 +69,11 @@
     "materialsLabel": "Materials Affected",
     "emptyState": "No areas yet. Tap + to add the first room.",
     "noDimensions": "No dimensions",
-    "errorNameRequired": "Room name is required"
+    "errorNameRequired": "Room name is required",
+    "materialNotePrompt": "Material not in list? Select closest match + add a note",
+    "materialNoteLabel": "Describe actual material",
+    "materialNotePlaceholder": "e.g. polished concrete — used Tile as closest match",
+    "materialNoteTooltip": "Material note: {{note}}"
   },
   "materials": {
     "floor": "Floor",
@@ -84,7 +88,12 @@
     "drywall": "Drywall",
     "paneling": "Paneling",
     "insulation": "Insulation",
-    "acousticTile": "Acoustic Tile"
+    "acousticTile": "Acoustic Tile",
+    "hardwood": "Hardwood",
+    "concreteSlab": "Concrete Slab",
+    "plaster": "Plaster",
+    "brickBlock": "Brick/Block",
+    "dropCeiling": "Drop Ceiling"
   },
   "demo": {
     "title": "Demolition",
@@ -180,6 +189,21 @@
     "actionNew": "NEW",
     "actionUpdate": "UPDATE",
     "currentPrices": "{{count}} prices on file",
-    "updatedOn": "Updated {{date}}"
+    "updatedOn": "Updated {{date}}",
+    "materialsTab": "Materials",
+    "pricesTab": "Prices",
+    "materialsEmpty": "No materials configured yet.",
+    "loadDefaults": "Load Default Materials",
+    "loadingDefaults": "Loading...",
+    "addMaterial": "+ Add Material",
+    "materialName": "Material Name",
+    "materialCategory": "Category",
+    "materialIsCommon": "Chip",
+    "materialActive": "Active",
+    "materialSave": "Save",
+    "materialsFloor": "Floor",
+    "materialsWalls": "Walls",
+    "materialsCeiling": "Ceiling",
+    "materialToggleCommon": "Show as chip (common)"
   }
 }
