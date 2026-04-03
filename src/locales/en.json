@@ -146,5 +146,40 @@
     "scopeOfWork": "Scope of Work",
     "validityNote": "This estimate is valid for 14 days.",
     "approve": "Approve Estimate"
+  },
+  "login": {
+    "subtitle": "Field Estimate Tool",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign In",
+    "signingIn": "Signing in...",
+    "invalidCredentials": "Invalid email or password. Please try again."
+  },
+  "estimatesList": {
+    "title": "My Estimates",
+    "searchPlaceholder": "Search by name, address, or ID...",
+    "empty": "No estimates yet",
+    "emptyDetail": "Tap + to create your first estimate on-site.",
+    "noResults": "No results found",
+    "noResultsDetail": "Try a different search term.",
+    "newEstimate": "New Estimate",
+    "signOut": "Sign Out",
+    "menuPrices": "Manage Prices"
+  },
+  "admin": {
+    "pricesTitle": "Price Management",
+    "uploadTitle": "Upload Xactimate Price List",
+    "uploadDetail": "Upload an .xlsx export from Xactimate. Columns: Cat (29), Sel (30), Desc (3), Unit Cost (9), Unit (10).",
+    "uploadButton": "Choose .xlsx File",
+    "parsing": "Parsing...",
+    "parseErrors": "parse errors",
+    "previewSummary": "{{updates}} prices will update · {{newItems}} new items · {{skipped}} rows skipped",
+    "applyButton": "Apply {{count}} Changes",
+    "applying": "Applying...",
+    "applySuccess": "Prices updated successfully.",
+    "actionNew": "NEW",
+    "actionUpdate": "UPDATE",
+    "currentPrices": "{{count}} prices on file",
+    "updatedOn": "Updated {{date}}"
   }
 }
