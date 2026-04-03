@@ -1,5 +1,3 @@
-import { cn } from "@/lib/utils";
-
 interface SelectOption {
   value: string;
   label: string;
@@ -22,11 +20,17 @@ export function SelectButtonGroup({
   error,
 }: SelectButtonGroupProps) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <span className="text-sm font-medium" style={{ color: "var(--color-text)" }}>
+    <div className="flex flex-col gap-2">
+      <span
+        className="text-xs font-medium uppercase tracking-wide"
+        style={{ color: "var(--color-text-secondary)" }}
+      >
         {label}
       </span>
-      <div className="grid gap-2" style={{ gridTemplateColumns: `repeat(${options.length}, 1fr)` }}>
+      <div
+        className="grid gap-2"
+        style={{ gridTemplateColumns: `repeat(${options.length}, 1fr)` }}
+      >
         {options.map((opt) => {
           const selected = value === opt.value;
           return (
@@ -35,29 +39,21 @@ export function SelectButtonGroup({
               type="button"
               onClick={() => onChange(opt.value)}
               aria-pressed={selected}
-              className={cn(
-                "flex flex-col items-center justify-center rounded-lg border-2 px-2 py-3 text-sm font-semibold transition-colors",
-                "min-h-[56px] select-none"
-              )}
-              style={
-                selected
-                  ? {
-                      backgroundColor: "var(--color-primary)",
-                      borderColor: "var(--color-primary)",
-                      color: "#ffffff",
-                    }
-                  : {
-                      backgroundColor: "var(--color-bg)",
-                      borderColor: "var(--color-border)",
-                      color: "var(--color-text)",
-                    }
-              }
+              className="flex flex-col items-center justify-center gap-0.5 border px-2 py-3 text-sm font-semibold transition-colors select-none"
+              style={{
+                minHeight: "56px",
+                borderRadius: "4px",
+                borderWidth: selected ? "2px" : "1.5px",
+                borderColor: selected ? "var(--color-primary)" : "var(--color-border)",
+                backgroundColor: selected ? "var(--color-primary)" : "var(--color-surface)",
+                color: selected ? "#ffffff" : "var(--color-text-primary)",
+              }}
             >
               <span>{opt.label}</span>
               {opt.detail && (
                 <span
-                  className="mt-0.5 text-xs font-normal"
-                  style={{ opacity: selected ? 0.8 : 0.6 }}
+                  className="text-xs font-normal"
+                  style={{ opacity: selected ? 0.85 : 0.55 }}
                 >
                   {opt.detail}
                 </span>
@@ -67,7 +63,7 @@ export function SelectButtonGroup({
         })}
       </div>
       {error && (
-        <p className="text-sm" style={{ color: "var(--color-error)" }} role="alert">
+        <p className="text-xs" style={{ color: "var(--color-error)" }} role="alert">
           {error}
         </p>
       )}

@@ -8,25 +8,27 @@ interface EmergencyBadgeProps {
 export function EmergencyBadge({ title, detail }: EmergencyBadgeProps) {
   return (
     <div
-      className="flex items-start gap-3 rounded-lg border-2 px-4 py-3"
+      className="flex items-start gap-3 border px-4 py-3"
       style={{
-        backgroundColor: "#fffbeb",
-        borderColor: "var(--color-warning)",
+        borderRadius: "4px",
+        backgroundColor: "#FFFBEB",
+        borderColor: "var(--color-emergency)",
+        borderWidth: "1.5px",
       }}
       role="status"
       aria-live="polite"
     >
       <TriangleAlert
         className="mt-0.5 shrink-0"
-        size={20}
-        style={{ color: "var(--color-warning)" }}
+        size={18}
+        style={{ color: "var(--color-emergency)" }}
         aria-hidden
       />
       <div>
-        <p className="text-sm font-semibold" style={{ color: "#92400e" }}>
+        <p className="text-sm font-semibold" style={{ color: "#92400E" }}>
           {title}
         </p>
-        <p className="text-sm" style={{ color: "#92400e", opacity: 0.85 }}>
+        <p className="text-xs mt-0.5" style={{ color: "#92400E", opacity: 0.85 }}>
           {detail}
         </p>
       </div>

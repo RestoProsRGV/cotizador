@@ -10,15 +10,15 @@ export const FieldInput = forwardRef<HTMLInputElement, FieldInputProps>(
   ({ label, error, className, id, ...props }, ref) => {
     const inputId = id ?? label.toLowerCase().replace(/\s+/g, "-");
     return (
-      <div className="flex flex-col gap-1.5">
+      <div className="flex flex-col gap-1">
         <label
           htmlFor={inputId}
-          className="text-sm font-medium"
-          style={{ color: "var(--color-text)" }}
+          className="text-xs uppercase tracking-wide"
+          style={{ color: "var(--color-text-secondary)" }}
         >
           {label}
           {props.required && (
-            <span className="ml-1" style={{ color: "var(--color-error)" }} aria-hidden>
+            <span className="ml-0.5" style={{ color: "var(--color-error)" }} aria-hidden>
               *
             </span>
           )}
@@ -27,29 +27,30 @@ export const FieldInput = forwardRef<HTMLInputElement, FieldInputProps>(
           ref={ref}
           id={inputId}
           className={cn(
-            "w-full rounded-lg border px-3 text-base outline-none transition-shadow",
-            "focus:ring-2",
+            "w-full border px-3 text-base outline-none transition-colors",
             error ? "border-[var(--color-error)]" : "border-[var(--color-border)]",
             className
           )}
           style={{
             height: "48px",
-            backgroundColor: "var(--color-bg)",
-            color: "var(--color-text)",
-            // focus ring via CSS since Tailwind v4 needs inline for CSS vars
+            borderRadius: "4px",
+            backgroundColor: "var(--color-surface)",
+            color: "var(--color-text-primary)",
           }}
           onFocus={(e) => {
-            e.currentTarget.style.boxShadow = "0 0 0 2px var(--color-primary)";
+            if (!error) e.currentTarget.style.borderColor = "var(--color-primary)";
             props.onFocus?.(e);
           }}
           onBlur={(e) => {
-            e.currentTarget.style.boxShadow = "";
+            e.currentTarget.style.borderColor = error
+              ? "var(--color-error)"
+              : "var(--color-border)";
             props.onBlur?.(e);
           }}
           {...props}
         />
         {error && (
-          <p className="text-sm" style={{ color: "var(--color-error)" }} role="alert">
+          <p className="text-xs" style={{ color: "var(--color-error)" }} role="alert">
             {error}
           </p>
         )}
