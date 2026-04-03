@@ -1,8 +1,21 @@
+/**
+ * SuggestionRule defines how a suggestion's quantity is derived from the
+ * parent item's quantity. Used for flood cut items where insulation SF
+ * scales with the cut height (2ft → qty×2, 4ft → qty×4).
+ *
+ * If qtyMultiplier is undefined, the suggestion uses getDefaultQty() as usual.
+ */
+export interface SuggestionRule {
+  code: string;
+  qtyMultiplier?: number; // multiply parent LF qty by this to get suggestion qty
+}
+
 export interface DemoItemDef {
   code: string;
   name: string;
   unit: string;
-  suggestions: string[];
+  suggestions: string[]; // simple suggestion codes (use getDefaultQty)
+  suggestionRules?: SuggestionRule[]; // overrides suggestions when present
 }
 
 export interface DemoSection {
@@ -13,7 +26,28 @@ export interface DemoSection {
 
 export const WALLS_STRUCTURE: DemoItemDef[] = [
   { code: "DEM-DW-RM", name: "Drywall Removal", unit: "SF", suggestions: ["DEM-BSBD-RM", "DEM-INSUL-RM"] },
-  { code: "DEM-FLOOD-CUT", name: "Flood Cut", unit: "LF", suggestions: ["DEM-BSBD-RM", "DEM-INSUL-RM", "DEM-CAVITY-DRILL"] },
+  {
+    code: "DEM-FLOOD-CUT-2FT",
+    name: "Drywall Flood Cut 2ft",
+    unit: "LF",
+    suggestions: [],
+    // Baseboard: same LF (×1). Insulation: LF × 2 SF (2ft height).
+    suggestionRules: [
+      { code: "DEM-BSBD-RM", qtyMultiplier: 1 },
+      { code: "DEM-INSUL-RM", qtyMultiplier: 2 },
+    ],
+  },
+  {
+    code: "DEM-FLOOD-CUT-4FT",
+    name: "Drywall Flood Cut 4ft",
+    unit: "LF",
+    suggestions: [],
+    // Baseboard: same LF (×1). Insulation: LF × 4 SF (4ft height).
+    suggestionRules: [
+      { code: "DEM-BSBD-RM", qtyMultiplier: 1 },
+      { code: "DEM-INSUL-RM", qtyMultiplier: 4 },
+    ],
+  },
   { code: "DEM-CAVITY-DRILL", name: "Wall Cavity Drill", unit: "EA", suggestions: [] },
   { code: "DEM-INSUL-RM", name: "Insulation Removal", unit: "SF", suggestions: [] },
 ];

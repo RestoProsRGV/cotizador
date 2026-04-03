@@ -6,6 +6,11 @@ import { supabase } from "@/lib/supabase";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { EstimateNav } from "@/components/layout/EstimateNav";
 import { DEMO_SECTIONS, ALL_DEMO_ITEMS, type DemoItemDef } from "@/constants/demoItems";
+
+interface SuggestionWithQty {
+  def: DemoItemDef;
+  qty?: number; // when defined, overrides getDefaultQty for the inserted item
+}
 import { getPrice } from "@/constants/prices";
 
 interface LineItem {
@@ -90,10 +95,30 @@ export function Demo() {
     return lineItems.find((li) => li.xactimate_code === code);
   }
 
-  function getSuggestionsToAdd(def: DemoItemDef): DemoItemDef[] {
+  /**
+   * Returns suggestions for a demo item, with derived quantities where applicable.
+   * Items with suggestionRules get qty = parentQty × multiplier (e.g. flood cut insulation).
+   * Items with plain suggestions[] get qty from getDefaultQty() as usual.
+   */
+  function getSuggestionsWithQty(def: DemoItemDef, parentQty: number): SuggestionWithQty[] {
+    if (def.suggestionRules && def.suggestionRules.length > 0) {
+      const results: SuggestionWithQty[] = [];
+      for (const rule of def.suggestionRules) {
+        const sugDef = ALL_DEMO_ITEMS[rule.code];
+        if (!sugDef || isSelected(rule.code)) continue;
+        const qty =
+          rule.qtyMultiplier !== undefined
+            ? Math.round(parentQty * rule.qtyMultiplier)
+            : undefined;
+        results.push({ def: sugDef, qty });
+      }
+      return results;
+    }
+    // Fallback: plain suggestions array, no qty override
     return def.suggestions
       .map((code) => ALL_DEMO_ITEMS[code])
-      .filter((d): d is DemoItemDef => !!d && !isSelected(d.code));
+      .filter((d): d is DemoItemDef => !!d && !isSelected(d.code))
+      .map((d) => ({ def: d }));
   }
 
   async function toggleItem(def: DemoItemDef) {
@@ -114,8 +139,8 @@ export function Demo() {
     }
   }
 
-  async function insertItem(def: DemoItemDef) {
-    const qty = getDefaultQty(def.unit, totalSf, perimeterLf);
+  async function insertItem(def: DemoItemDef, overrideQty?: number) {
+    const qty = overrideQty ?? getDefaultQty(def.unit, totalSf, perimeterLf);
     const price = getPrice(def.code);
     const { data, error } = await supabase
       .from("line_items")
@@ -151,10 +176,10 @@ export function Demo() {
     }
   }
 
-  async function addAll(suggestions: DemoItemDef[]) {
-    for (const def of suggestions) {
+  async function addAll(suggestions: SuggestionWithQty[]) {
+    for (const { def, qty } of suggestions) {
       if (!isSelected(def.code)) {
-        await insertItem(def);
+        await insertItem(def, qty);
       }
     }
   }
@@ -293,7 +318,9 @@ export function Demo() {
                     {section.items.map((def) => {
                       const selected = isSelected(def.code);
                       const lineItem = getItem(def.code);
-                      const suggestions = selected ? getSuggestionsToAdd(def) : [];
+                      const suggestions = selected
+                        ? getSuggestionsWithQty(def, lineItem?.quantity ?? getDefaultQty(def.unit, totalSf, perimeterLf))
+                        : [];
 
                       return (
                         <div key={def.code}>
@@ -418,7 +445,7 @@ export function Demo() {
                                 }}
                               >
                                 {t("demo.addWith")}:{" "}
-                                {suggestions.map((s) => s.name).join(", ")}
+                                {suggestions.map((s) => s.def.name).join(", ")}
                               </span>
                               <button
                                 type="button"

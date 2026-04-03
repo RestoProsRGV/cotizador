@@ -12,6 +12,15 @@ import { Total } from "@/screens/Total";
 import { Present } from "@/screens/Present";
 import { AdminPrices } from "@/screens/admin/AdminPrices";
 
+// Route architecture:
+//   /                → redirect to /estimates (mobile field tool)
+//   /login           → public login screen
+//   /estimates/*     → mobile field estimation (touch-optimized, on-site)
+//   /admin/*         → admin screens (owner only, works on desktop too)
+//   /desktop/*       → reserved for future desktop-only views (see CLAUDE.md)
+//
+// Desktop views planned for future session — see CLAUDE.md architecture notes.
+
 export function App() {
   return (
     <Routes>
@@ -19,10 +28,10 @@ export function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/estimates/:id/present" element={<Present />} />
 
-      {/* Redirect root → estimates list */}
+      {/* Redirect root → estimates list (mobile entry point) */}
       <Route path="/" element={<Navigate to="/estimates" replace />} />
 
-      {/* Protected: tech + owner */}
+      {/* ── Mobile: field estimation ── */}
       <Route
         path="/estimates"
         element={
@@ -88,7 +97,7 @@ export function App() {
         }
       />
 
-      {/* Protected: owner only */}
+      {/* ── Admin: owner-only configuration ── */}
       <Route
         path="/admin/prices"
         element={
@@ -97,6 +106,12 @@ export function App() {
           </RequireAuth>
         }
       />
+
+      {/* ── Desktop: reserved for future desktop-only views ── */}
+      {/* /desktop/* routes will be built in a future session.
+          They will share the same Supabase backend + auth but provide
+          a wider-canvas UI for reporting, suggestion rule editing,
+          material management, and multi-estimate review. */}
     </Routes>
   );
 }
