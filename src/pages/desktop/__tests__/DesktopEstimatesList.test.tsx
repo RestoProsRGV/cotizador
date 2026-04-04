@@ -167,7 +167,7 @@ describe("EstimatesTable — static rendering", () => {
     );
     // Click the data row (second row — first is header)
     const rows = screen.getAllByRole("row");
-    fireEvent.click(rows[1]);
+    fireEvent.click(rows[1]!);
     expect(onRowClick).toHaveBeenCalledWith("abc123def456");
   });
 

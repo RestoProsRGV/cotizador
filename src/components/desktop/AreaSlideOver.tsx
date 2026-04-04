@@ -43,7 +43,7 @@ export function AreaSlideOver({ area, lineItems, onClose }: AreaSlideOverProps) 
   const byModule: Record<string, SlideOverLineItem[]> = {};
   for (const item of lineItems) {
     if (!byModule[item.module]) byModule[item.module] = [];
-    byModule[item.module].push(item);
+    byModule[item.module]!.push(item);
   }
 
   return (
@@ -160,7 +160,7 @@ export function AreaSlideOver({ area, lineItems, onClose }: AreaSlideOverProps) 
                     overflow: "hidden",
                   }}
                 >
-                  {byModule[mod].map((item, i) => (
+                  {(byModule[mod] ?? []).map((item, i) => (
                     <div
                       key={item.id}
                       style={{
@@ -169,7 +169,7 @@ export function AreaSlideOver({ area, lineItems, onClose }: AreaSlideOverProps) 
                         alignItems: "center",
                         padding: "10px 12px",
                         borderBottom:
-                          i < byModule[mod].length - 1 ? "1px solid #f3f4f6" : "none",
+                          i < (byModule[mod]?.length ?? 1) - 1 ? "1px solid #f3f4f6" : "none",
                       }}
                     >
                       <span style={{ fontSize: "13px", color: "#374151" }}>{item.name}</span>

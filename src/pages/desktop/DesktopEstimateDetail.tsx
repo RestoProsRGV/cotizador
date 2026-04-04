@@ -77,7 +77,7 @@ function Badge({ label, variant = "gray" }: { label: string; variant?: "gray" | 
     green: { bg: "#d1fae5", color: "#065f46" },
     blue: { bg: "#dbeafe", color: "#1e40af" },
   };
-  const { bg, color } = styles[variant];
+  const { bg, color } = styles[variant] ?? { bg: "#f3f4f6", color: "#374151" };
   return (
     <span
       style={{

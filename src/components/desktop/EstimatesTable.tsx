@@ -193,7 +193,7 @@ export function EstimatesTable({ estimates, totals, onRowClick }: EstimatesTable
             {/* Total */}
             <td style={{ padding: "14px 16px", textAlign: "right" }}>
               <span style={{ fontSize: "14px", fontWeight: 700, color: "#111827" }}>
-                {totals[est.id] != null ? formatCurrency(totals[est.id]) : "—"}
+                {totals[est.id] != null ? formatCurrency(totals[est.id]!) : "—"}
               </span>
             </td>
             {/* Status */}
