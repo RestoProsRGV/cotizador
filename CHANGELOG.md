@@ -36,7 +36,7 @@ Every development session adds an entry. Format:
 - `src/pages/desktop/__tests__/DesktopEstimateDetail.test.tsx`
 
 ### Commits pushed
-- [paste after push]
+- `b5fbd1f` feat: desktop UI — /desktop/* routes with Encircle-inspired layout
 
 ### Open items
 - Suggestion Rules Manager — Admin desktop UI
