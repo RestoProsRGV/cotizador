@@ -20,6 +20,11 @@ Every significant decision is recorded here with:
 **Why:** Field techs need speed and large tap targets. Admins need configuration screens that don't make sense on a phone.
 **Alternative considered:** One app for everything — rejected because mobile screen real estate is too limited for complex configuration.
 
+### Desktop UI uses Encircle layout pattern
+**Decision:** 64px dark sidebar (icon-only, `#1e2535`) + full-width content area. Routes at `/desktop/*`. Same Supabase backend, same hooks, read-only estimate/area/line-item views.
+**Why:** Encircle's sidebar navigation is already familiar to RestoPros team. Icon-only keeps the sidebar compact while preserving visual grounding. Mobile (`/estimates/*`) is the field tool — desktop (`/desktop/*`) is the review and management tool.
+**Alternative considered:** Top navigation bar — rejected because Encircle uses sidebar and we're following their visual language.
+
 ### i18n from day one
 **Decision:** All UI strings use translation keys from en.json. Zero hardcoded text.
 **Why:** Module names like "Demo" may change to "Mitigation" for market launch. With i18n, that's a one-file change.

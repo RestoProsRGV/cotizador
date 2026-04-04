@@ -9,6 +9,9 @@ import { General } from "@/screens/General";
 import { Total } from "@/screens/Total";
 import { Present } from "@/screens/Present";
 import { AdminPrices } from "@/screens/admin/AdminPrices";
+import { DesktopEstimatesList } from "@/pages/desktop/DesktopEstimatesList";
+import { DesktopEstimateDetail } from "@/pages/desktop/DesktopEstimateDetail";
+import { DesktopAdminPrices } from "@/pages/desktop/DesktopAdminPrices";
 
 // Route architecture:
 //   /                → redirect to /estimates (mobile field tool)
@@ -96,11 +99,31 @@ export function App() {
         }
       />
 
-      {/* ── Desktop: reserved for future desktop-only views ── */}
-      {/* /desktop/* routes will be built in a future session.
-          They will share the same Supabase backend + auth but provide
-          a wider-canvas UI for reporting, suggestion rule editing,
-          material management, and multi-estimate review. */}
+      {/* ── Desktop: review and management UI ── */}
+      <Route
+        path="/desktop/estimates"
+        element={
+          <RequireAuth>
+            <DesktopEstimatesList />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/desktop/estimates/:id"
+        element={
+          <RequireAuth>
+            <DesktopEstimateDetail />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/desktop/admin/prices"
+        element={
+          <RequireAuth requireOwner>
+            <DesktopAdminPrices />
+          </RequireAuth>
+        }
+      />
     </Routes>
   );
 }

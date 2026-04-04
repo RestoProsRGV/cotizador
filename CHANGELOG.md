@@ -9,6 +9,44 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: April 3, 2026 — Desktop UI
+
+### Decisions made
+- Desktop UI uses Encircle layout pattern: 64px dark sidebar (`#1e2535`) + full-width content area
+- Sidebar is icon-only (no labels) with 44px touch targets — RP logo mark at top, user avatar at bottom
+- Desktop routes live at `/desktop/*` — same auth, same Supabase backend, read-only views
+- `DesktopAdminPrices` wraps existing `AdminPrices` with sidebar only (no second header) — no rebuild needed
+- Active sidebar item: blue background `rgba(33,150,243,0.12)` + blue icon; inactive: `#8892a4`
+
+### Pages built
+- **`/desktop/estimates`** — `DesktopEstimatesList`: full-width data table with search + status filter, totals aggregated from `line_items`, EMRG badge, row-click navigation
+- **`/desktop/estimates/:id`** — `DesktopEstimateDetail`: 4-tab view (Overview, Areas, General, Total) with `AreaSlideOver` panel for per-area line items
+- **`/desktop/admin/prices`** — `DesktopAdminPrices`: sidebar + existing AdminPrices (owner-only)
+
+### Files created
+- `src/layouts/DesktopShell.tsx`
+- `src/components/desktop/DesktopSidebar.tsx`
+- `src/components/desktop/DesktopHeader.tsx`
+- `src/components/desktop/EstimatesTable.tsx`
+- `src/components/desktop/AreaSlideOver.tsx`
+- `src/pages/desktop/DesktopEstimatesList.tsx`
+- `src/pages/desktop/DesktopEstimateDetail.tsx`
+- `src/pages/desktop/DesktopAdminPrices.tsx`
+- `src/pages/desktop/__tests__/DesktopEstimatesList.test.tsx`
+- `src/pages/desktop/__tests__/DesktopEstimateDetail.test.tsx`
+
+### Commits pushed
+- [paste after push]
+
+### Open items
+- Suggestion Rules Manager — Admin desktop UI
+- Desktop UI routes (/desktop/*) ✅ done
+- PWA manifest — installable on phone home screen
+- Sentry — error monitoring for PROD
+- PDF output — not yet tested on a real estimate
+
+---
+
 ## Session: April 3, 2026 — QA Review #1
 
 ### Decisions made
