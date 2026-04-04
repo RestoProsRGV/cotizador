@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { RequireAuth } from "@/components/layout/RequireAuth";
+import { useDeviceRedirect } from "@/hooks/useDeviceRedirect";
 import { Login } from "@/screens/Login";
 import { EstimatesList } from "@/screens/EstimatesList";
 import { NewEstimate } from "@/screens/NewEstimate";
@@ -14,13 +15,29 @@ import { DesktopEstimateDetail } from "@/pages/desktop/DesktopEstimateDetail";
 import { DesktopAdminPrices } from "@/pages/desktop/DesktopAdminPrices";
 
 // Route architecture:
-//   /                → redirect to /estimates (mobile field tool)
+//   /                → RootRedirect: desktop browser → /desktop/estimates, mobile/PWA → /estimates
 //   /login           → public login screen
+//   /estimates       → RootRedirect (same logic as /)
 //   /estimates/*     → mobile field estimation (touch-optimized, on-site)
 //   /admin/*         → admin screens (owner only, works on desktop too)
-//   /desktop/*       → reserved for future desktop-only views (see CLAUDE.md)
-//
-// Desktop views planned for future session — see CLAUDE.md architecture notes.
+//   /desktop/*       → desktop review and management UI
+
+/** Redirects / to /desktop/estimates (wide browser) or /estimates (mobile/PWA). */
+function RootRedirect() {
+  const mode = useDeviceRedirect();
+  return <Navigate to={mode === "desktop" ? "/desktop/estimates" : "/estimates"} replace />;
+}
+
+/**
+ * Entry point for /estimates (exact).
+ * Desktop browser → redirect to /desktop/estimates.
+ * Mobile/PWA → render EstimatesList directly (no redirect, avoids loop).
+ */
+function EstimatesEntryPoint() {
+  const mode = useDeviceRedirect();
+  if (mode === "desktop") return <Navigate to="/desktop/estimates" replace />;
+  return <EstimatesList />;
+}
 
 export function App() {
   return (
@@ -29,15 +46,15 @@ export function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/estimates/:id/present" element={<Present />} />
 
-      {/* Redirect root → estimates list (mobile entry point) */}
-      <Route path="/" element={<Navigate to="/estimates" replace />} />
+      {/* Smart entry-point redirect: desktop browser → /desktop/estimates, mobile/PWA → /estimates */}
+      <Route path="/" element={<RootRedirect />} />
 
       {/* ── Mobile: field estimation ── */}
       <Route
         path="/estimates"
         element={
           <RequireAuth>
-            <EstimatesList />
+            <EstimatesEntryPoint />
           </RequireAuth>
         }
       />

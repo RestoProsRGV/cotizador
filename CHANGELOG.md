@@ -9,6 +9,30 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: April 3, 2026 — Smart Device Redirect
+
+### Decisions made
+- Root URL (`/`) and `/estimates` auto-detect device context: standalone/PWA → mobile, wide browser (≥1024px) → desktop
+- `EstimatesEntryPoint` wraps `/estimates` route — desktop browser redirects onward, mobile renders `EstimatesList` (no infinite loop)
+- Test default: jsdom `window.innerWidth` overridden to 0 in setup.ts so tests use mobile path by default
+
+### Files changed
+- `src/hooks/useDeviceRedirect.ts` — new hook
+- `src/App.tsx` — `RootRedirect` + `EstimatesEntryPoint` components replace static redirect
+- `src/test/setup.ts` — added `matchMedia` stub + `innerWidth = 0` default
+- `src/hooks/useDeviceRedirect.test.ts` — 6 tests (standalone, wide, narrow, iPad combos)
+
+### Commits pushed
+- [paste after push]
+
+### Open items
+- Suggestion Rules Manager — Admin desktop UI
+- PWA manifest — installable on phone home screen (hook is ready, waiting on manifest)
+- Sentry — error monitoring for PROD
+- PDF output — not yet tested on a real estimate
+
+---
+
 ## Session: April 3, 2026 — Desktop UI
 
 ### Decisions made

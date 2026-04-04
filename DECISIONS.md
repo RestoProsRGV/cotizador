@@ -20,6 +20,11 @@ Every significant decision is recorded here with:
 **Why:** Field techs need speed and large tap targets. Admins need configuration screens that don't make sense on a phone.
 **Alternative considered:** One app for everything — rejected because mobile screen real estate is too limited for complex configuration.
 
+### Device routing at entry points
+**Decision:** Root URL (`/`) and `/estimates` auto-detect context. PWA (standalone display mode) always routes to mobile (`/estimates/*`). Browser with width ≥ 1024px routes to desktop (`/desktop/*`). Browser under 1024px routes to mobile. Deep links bypass detection and load directly.
+**Why:** Techs install the PWA on their phone — standalone mode guarantees they always get the mobile field tool regardless of screen size. Owners reviewing estimates on a desktop browser get the wider layout automatically, no manual URL typing required.
+**Alternative considered:** Manual toggle or separate login — rejected because techs shouldn't have to think about which URL to use.
+
 ### Desktop UI uses Encircle layout pattern
 **Decision:** 64px dark sidebar (icon-only, `#1e2535`) + full-width content area. Routes at `/desktop/*`. Same Supabase backend, same hooks, read-only estimate/area/line-item views.
 **Why:** Encircle's sidebar navigation is already familiar to RestoPros team. Icon-only keeps the sidebar compact while preserving visual grounding. Mobile (`/estimates/*`) is the field tool — desktop (`/desktop/*`) is the review and management tool.
