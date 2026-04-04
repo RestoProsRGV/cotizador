@@ -1,3 +1,43 @@
+## How we work
+
+### Roles
+- **claude.ai** — analysis, architecture decisions, UX design, prompt generation
+- **Claude Code** — implementation only. Never make architectural decisions
+  without a prompt that came from a claude.ai session.
+
+### Pre-push checklist (every push to main)
+1. `/gstack:review` — fix all issues before pushing
+2. `npm test` — all tests must pass
+3. Push
+4. Verify Vercel deploy is READY
+5. Update CHANGELOG.md with deploy verification
+
+### When to write a spec first
+Before implementing any of these, create a spec doc in `docs/SPEC-[feature].md`:
+- New modules or major features
+- Changes to pricing logic or IICRC formulas
+- Multi-step flows (approvals, versioning, PDF generation)
+- Anything that touches more than 3 files
+
+Spec doc template:
+```
+# Spec: [Feature Name]
+## Problem
+## Options considered
+## Decision
+## Implementation plan
+## Edge cases
+```
+
+### When CLAUDE.md gets too long
+When CLAUDE.md exceeds 150 lines, split into:
+- `CLAUDE.md` — general rules + how we work
+- `docs/MODULES.md` — per-module business logic
+- `docs/CALCULATIONS.md` — IICRC formulas, pricing
+- `docs/ARCHITECTURE.md` — routes, Mobile vs Desktop, Supabase schema
+
+---
+
 @AGENTS.md
 @DECISIONS.md
 @CHANGELOG.md
@@ -114,3 +154,9 @@ Module names use i18n keys (`nav.prep`, `nav.demo`, etc.) — may change for mar
 | Bedroom | Drywall, Baseboard | Floor Plastic |
 | Living Room | Drywall, Baseboard | Floor Plastic |
 | Hallway/Closet/Garage | Drywall, Baseboard | Floor Plastic |
+
+## Supabase MCP in claude.ai
+Supabase MCP is connected to claude.ai (not just Claude Code).
+Use it to audit production data directly — verify line_items saved correctly,
+check that totals match UI, validate pricing calculations — without asking
+Claude Code to write query scripts.

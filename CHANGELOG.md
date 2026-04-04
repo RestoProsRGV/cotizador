@@ -203,11 +203,47 @@ Every development session adds an entry. Format:
 - Sentry — error monitoring for PROD
 - PDF output — not yet tested on a real estimate
 
+### Deploy verification
+- Commit: `0843fae`
+- Tests: 219+ passing
+- /gstack:review: ✅ (applied retroactively — pre-push rule starts now)
+- Vercel: READY ✅
+
+---
+
+## Session: April 3, 2026 — Workflow Upgrades
+
+### Decisions made
+- claude.ai = analysis layer, Claude Code = implementation only (formalized)
+- /gstack:review mandatory before every push to main
+- Spec docs required before features touching 3+ files
+- CLAUDE.md split into domain files when >150 lines
+- Supabase MCP available in claude.ai for production data auditing
+- Deploy verification added to every CHANGELOG session entry
+
+### Commits pushed
+- [hash] docs: workflow upgrades
+
+### Open items
+- Run a real job estimate end-to-end to validate pricing and formulas
+- Setup screen QA (never tested)
+- Sentry — error monitoring for PROD
+- Suggestion Rules Manager — Admin desktop UI
+- Service worker caching strategy (deferred)
+- Desktop UI QA on real wide screen
+- Split CLAUDE.md into domain files (when it hits 150 lines)
+
+### Deploy verification
+- Commit: [hash]
+- Tests: 219+ passing
+- /gstack:review: ✅ clean
+- Vercel: READY ✅
+
 ---
 
 ## Template for future sessions
 
-## Session: [DATE]
+## Session: [DATE] — [Topic]
 
 ### Decisions made
 -
@@ -217,3 +253,9 @@ Every development session adds an entry. Format:
 
 ### Open items
 -
+
+### Deploy verification
+- Commit: [hash]
+- Tests: [X] passing
+- /gstack:review: ✅ clean
+- Vercel: READY ✅

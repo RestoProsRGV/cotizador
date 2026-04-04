@@ -8,6 +8,40 @@ Every significant decision is recorded here with:
 
 ---
 
+## Workflow Decisions
+
+### claude.ai vs Claude Code separation
+**Decision:** claude.ai handles analysis, architecture, UX design, and prompt
+generation. Claude Code only implements what claude.ai has already decided.
+**Why:** Claude Code tends to implement the first option it analyzes without
+exploring alternatives. Architectural decisions need exploration first.
+**Alternative considered:** Everything in Claude Code — rejected because it
+mixes design thinking with implementation.
+
+### /gstack:review before every push
+**Decision:** /gstack:review is mandatory before every push to main.
+**Why:** Catches TypeScript errors, logic bugs, and code quality issues
+before they reach production. Two failed Vercel deploys on April 3 would
+have been prevented by this rule.
+**Alternative considered:** Only run on major features — rejected because
+bugs don't announce themselves as major.
+
+### Spec docs before complex features
+**Decision:** Any feature touching 3+ files or involving new business logic
+gets a spec doc in docs/SPEC-[feature].md before implementation.
+**Why:** Prevents mid-implementation architecture changes and documents
+edge cases before they become bugs.
+**Alternative considered:** Design in the PR description — rejected because
+PR descriptions aren't read by Claude Code in future sessions.
+
+### CLAUDE.md split threshold
+**Decision:** Split CLAUDE.md into domain files when it exceeds 150 lines.
+**Why:** Claude Code reads CLAUDE.md at the start of each session but loses
+context from later sections in long conversations. Shorter focused files
+are read more reliably.
+
+---
+
 ## Architecture Decisions
 
 ### Per-area module structure
