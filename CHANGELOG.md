@@ -195,7 +195,7 @@ Every development session adds an entry. Format:
 - `public/manifest.json` — description updated to include "tool"
 
 ### Commits pushed
-- (pending)
+- `8c89f72` feat: Setup screen — edit estimate in place, auto-save, fire job type + PWA meta fixes
 
 ### Open items
 - Suggestion Rules Manager — Admin desktop UI
