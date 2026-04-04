@@ -222,7 +222,7 @@ Every development session adds an entry. Format:
 - Deploy verification added to every CHANGELOG session entry
 
 ### Commits pushed
-- [hash] docs: workflow upgrades
+- `2ac7288` docs: workflow upgrades — pre-push checklist, spec docs, deploy verification
 
 ### Open items
 - Run a real job estimate end-to-end to validate pricing and formulas
@@ -234,8 +234,8 @@ Every development session adds an entry. Format:
 - Split CLAUDE.md into domain files (when it hits 150 lines)
 
 ### Deploy verification
-- Commit: [hash]
-- Tests: 219+ passing
+- Commit: `2ac7288`
+- Tests: 256 passing
 - /gstack:review: ✅ clean
 - Vercel: READY ✅
 
