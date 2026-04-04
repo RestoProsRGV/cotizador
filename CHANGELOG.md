@@ -23,7 +23,7 @@ Every development session adds an entry. Format:
 - `src/hooks/useDeviceRedirect.test.ts` — 6 tests (standalone, wide, narrow, iPad combos)
 
 ### Commits pushed
-- [paste after push]
+- `3e3928f` feat: smart device redirect — auto-route desktop vs mobile on entry
 
 ### Open items
 - Suggestion Rules Manager — Admin desktop UI
