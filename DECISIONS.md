@@ -20,6 +20,11 @@ Every significant decision is recorded here with:
 **Why:** Field techs need speed and large tap targets. Admins need configuration screens that don't make sense on a phone.
 **Alternative considered:** One app for everything — rejected because mobile screen real estate is too limited for complex configuration.
 
+### PWA manifest and service worker
+**Decision:** App is installable on iPhone home screen via Safari "Add to Home Screen". `display: standalone` ensures `useDeviceRedirect` routes to mobile experience. Service worker is minimal pass-through only — no offline caching yet.
+**Why:** Field techs work on-site and need fast access. Installing the PWA removes browser chrome (no address bar) and puts the icon on the home screen. The standalone display mode is what makes `useDeviceRedirect` correctly force mobile routing even on iPad.
+**Alternative considered:** Vite PWA plugin — skipped for now to keep setup minimal; plain manifest.json + sw.js is sufficient for installability without adding plugin complexity.
+
 ### Device routing at entry points
 **Decision:** Root URL (`/`) and `/estimates` auto-detect context. PWA (standalone display mode) always routes to mobile (`/estimates/*`). Browser with width ≥ 1024px routes to desktop (`/desktop/*`). Browser under 1024px routes to mobile. Deep links bypass detection and load directly.
 **Why:** Techs install the PWA on their phone — standalone mode guarantees they always get the mobile field tool regardless of screen size. Owners reviewing estimates on a desktop browser get the wider layout automatically, no manual URL typing required.

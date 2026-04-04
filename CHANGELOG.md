@@ -9,6 +9,34 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: April 3, 2026 — PWA Manifest
+
+### Decisions made
+- Minimal service worker (pass-through, no caching) — sufficient for browser installability criteria
+- Icons generated programmatically via `scripts/generate-icons.cjs` (canvas npm package), committed as PNGs
+- Vite PWA plugin skipped — plain manifest.json + sw.js is enough for now
+
+### Files created/modified
+- `public/manifest.json` — PWA manifest (name, icons, start_url, display: standalone)
+- `public/sw.js` — minimal pass-through service worker
+- `public/icons/icon-192.png` — generated blue circle + RP, 192×192px
+- `public/icons/icon-512.png` — generated blue circle + RP, 512×512px
+- `scripts/generate-icons.cjs` — icon generation script (canvas)
+- `src/registerSW.ts` — SW registration helper
+- `src/main.tsx` — calls registerSW() on startup
+- `index.html` — manifest link, theme-color, apple-mobile-web-app-* meta tags
+
+### Commits pushed
+- [paste after push]
+
+### Open items
+- Suggestion Rules Manager — Admin desktop UI
+- PWA offline caching — service worker currently pass-through only
+- Sentry — error monitoring for PROD
+- PDF output — not yet tested on a real estimate
+
+---
+
 ## Session: April 3, 2026 — Smart Device Redirect
 
 ### Decisions made
