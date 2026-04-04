@@ -49,11 +49,9 @@ export function EstimateNav() {
     >
       {TABS.map(({ slug, labelKey, Icon }) => {
         const isActive = activeSlug === slug ||
-          // Setup tab highlights when on areas or areas/:areaId
-          (slug === "setup" && (activeSlug === "areas" || activeSlug === "setup"));
-        const href = slug === "setup"
-          ? `/estimates/${id}/areas`
-          : `/estimates/${id}/${slug}`;
+          // Setup tab highlights when on areas or areas/:areaId too
+          (slug === "setup" && activeSlug === "areas");
+        const href = `/estimates/${id}/${slug}`;
 
         return (
           <button

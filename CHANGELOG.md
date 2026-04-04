@@ -175,6 +175,36 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: April 3, 2026 — Setup Screen + PWA Fixes
+
+### Decisions made
+- Setup screen auto-saves to Supabase on blur (text) / onChange (selectors) — no explicit Save button
+- Fire added as a 4th job type (water/mold/storm/fire); category = null for fire, same as storm
+- datetime-local shows estimate's `created_at`; changing it recalculates and saves the `emergency` boolean
+- `isEmergencyCall` mocked in tests to avoid timezone-dependent failures
+- `mobile-web-app-capable` meta tag added for Android PWA installability
+- manifest.json description updated to "…tool for RestoPros RGV"
+
+### Files created/modified
+- `src/screens/Setup.tsx` — new screen: edit estimate in place, auto-save, fire job type, emergency badge
+- `src/screens/__tests__/Setup.test.tsx` — 10 unit tests
+- `src/App.tsx` — added `/estimates/:id/setup` route + `Setup` import
+- `src/components/layout/EstimateNav.tsx` — Setup tab now links to `/setup`; active logic simplified
+- `src/locales/en.json` — added `newEstimate.jobTypeFire`
+- `index.html` — added `mobile-web-app-capable` meta tag (Android PWA)
+- `public/manifest.json` — description updated to include "tool"
+
+### Commits pushed
+- (pending)
+
+### Open items
+- Suggestion Rules Manager — Admin desktop UI
+- PWA offline caching — service worker currently pass-through only
+- Sentry — error monitoring for PROD
+- PDF output — not yet tested on a real estimate
+
+---
+
 ## Template for future sessions
 
 ## Session: [DATE]

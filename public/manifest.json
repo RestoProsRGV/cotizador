@@ -1,7 +1,7 @@
 {
   "name": "RestoPros Cotizador",
   "short_name": "Cotizador",
-  "description": "Water & mold damage estimating for RestoPros RGV",
+  "description": "Water & mold damage estimating tool for RestoPros RGV",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",

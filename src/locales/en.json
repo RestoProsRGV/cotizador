@@ -30,6 +30,7 @@
     "jobTypeWater": "Water",
     "jobTypeMold": "Mold",
     "jobTypeStorm": "Storm",
+    "jobTypeFire": "Fire",
     "waterCategory": "Water Category",
     "cat1": "Cat 1",
     "cat1Detail": "Clean water",

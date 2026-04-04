@@ -8,6 +8,7 @@ import { Areas } from "@/screens/Areas";
 import { AreaDetail } from "@/screens/AreaDetail";
 import { General } from "@/screens/General";
 import { Total } from "@/screens/Total";
+import { Setup } from "@/screens/Setup";
 import { Present } from "@/screens/Present";
 import { AdminPrices } from "@/screens/admin/AdminPrices";
 import { DesktopEstimatesList } from "@/pages/desktop/DesktopEstimatesList";
@@ -63,6 +64,14 @@ export function App() {
         element={
           <RequireAuth>
             <NewEstimate />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/estimates/:id/setup"
+        element={
+          <RequireAuth>
+            <Setup />
           </RequireAuth>
         }
       />
