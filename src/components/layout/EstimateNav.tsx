@@ -1,6 +1,6 @@
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { FileText, Grid2X2, Hammer, Sparkles, Wind, ListChecks, Receipt, Wrench } from "lucide-react";
+import { FileText, Grid2X2, ListChecks, Receipt, Eye } from "lucide-react";
 
 interface NavTab {
   slug: string;
@@ -8,15 +8,14 @@ interface NavTab {
   Icon: React.ComponentType<{ size?: number; "aria-hidden"?: boolean }>;
 }
 
+// 5 fixed tabs — all visible at once on 390px, no horizontal scroll.
+// Prep / Demo / Cleaning / Equipment live inside AreaDetail (per-area tabs), not here.
 const TABS: NavTab[] = [
-  { slug: "setup", labelKey: "estimateNav.setup", Icon: FileText },
-  { slug: "areas", labelKey: "estimateNav.areas", Icon: Grid2X2 },
-  { slug: "prep", labelKey: "estimateNav.prep", Icon: Wrench },
-  { slug: "demo", labelKey: "estimateNav.demo", Icon: Hammer },
-  { slug: "cleaning", labelKey: "estimateNav.cleaning", Icon: Sparkles },
-  { slug: "equipment", labelKey: "estimateNav.equipment", Icon: Wind },
+  { slug: "setup",   labelKey: "estimateNav.setup",   Icon: FileText },
+  { slug: "areas",   labelKey: "estimateNav.areas",   Icon: Grid2X2 },
   { slug: "general", labelKey: "estimateNav.general", Icon: ListChecks },
-  { slug: "total", labelKey: "estimateNav.total", Icon: Receipt },
+  { slug: "total",   labelKey: "estimateNav.total",   Icon: Receipt },
+  { slug: "present", labelKey: "estimateNav.present", Icon: Eye },
 ];
 
 export function EstimateNav() {
@@ -27,7 +26,7 @@ export function EstimateNav() {
 
   function getActiveSlug() {
     const path = location.pathname;
-    // /estimates/:id/areas/:areaId → match "areas"
+    // /estimates/:id/areas/:areaId → correctly returns "areas"
     const match = path.match(/\/estimates\/[^/]+\/([^/]+)/);
     return match?.[1] ?? "";
   }
@@ -41,18 +40,17 @@ export function EstimateNav() {
         backgroundColor: "var(--color-surface)",
         borderTop: "1px solid var(--color-border)",
         height: "56px",
-        overflowX: "auto",
         display: "flex",
         alignItems: "stretch",
-        scrollbarWidth: "none",
-        msOverflowStyle: "none",
         position: "sticky",
         bottom: 0,
         zIndex: 20,
       }}
     >
       {TABS.map(({ slug, labelKey, Icon }) => {
-        const isActive = activeSlug === slug;
+        const isActive = activeSlug === slug ||
+          // Setup tab highlights when on areas or areas/:areaId
+          (slug === "setup" && (activeSlug === "areas" || activeSlug === "setup"));
         const href = slug === "setup"
           ? `/estimates/${id}/areas`
           : `/estimates/${id}/${slug}`;
@@ -63,8 +61,7 @@ export function EstimateNav() {
             type="button"
             onClick={() => navigate(href)}
             style={{
-              minWidth: "72px",
-              flex: "0 0 auto",
+              flex: 1,
               display: "flex",
               flexDirection: "column",
               alignItems: "center",

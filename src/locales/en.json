@@ -54,7 +54,8 @@
     "cleaning": "Cleaning",
     "equipment": "Equipment",
     "general": "General",
-    "total": "Total"
+    "total": "Total",
+    "present": "Present"
   },
   "nav": {
     "prep": "Prep Work",
@@ -168,8 +169,8 @@
   },
   "total": {
     "title": "Total",
-    "moduleWater": "Water",
     "moduleGeneral": "General",
+    "modulePrep": "Prep Work",
     "moduleDemo": "Demo",
     "moduleCleaning": "Cleaning",
     "moduleEquipment": "Equipment",

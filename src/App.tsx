@@ -5,10 +5,6 @@ import { EstimatesList } from "@/screens/EstimatesList";
 import { NewEstimate } from "@/screens/NewEstimate";
 import { Areas } from "@/screens/Areas";
 import { AreaDetail } from "@/screens/AreaDetail";
-import { Prep } from "@/screens/Prep";
-import { Demo } from "@/screens/Demo";
-import { Cleaning } from "@/screens/Cleaning";
-import { Equipment } from "@/screens/Equipment";
 import { General } from "@/screens/General";
 import { Total } from "@/screens/Total";
 import { Present } from "@/screens/Present";
@@ -66,38 +62,13 @@ export function App() {
           </RequireAuth>
         }
       />
-      <Route
-        path="/estimates/:id/prep"
-        element={
-          <RequireAuth>
-            <Prep />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/estimates/:id/demo"
-        element={
-          <RequireAuth>
-            <Demo />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/estimates/:id/cleaning"
-        element={
-          <RequireAuth>
-            <Cleaning />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/estimates/:id/equipment"
-        element={
-          <RequireAuth>
-            <Equipment />
-          </RequireAuth>
-        }
-      />
+      {/* Prep/Demo/Cleaning/Equipment are now per-area inside AreaDetail.
+          Redirect old top-level routes to the areas list. */}
+      <Route path="/estimates/:id/prep"      element={<Navigate to="../areas" relative="path" replace />} />
+      <Route path="/estimates/:id/demo"      element={<Navigate to="../areas" relative="path" replace />} />
+      <Route path="/estimates/:id/cleaning"  element={<Navigate to="../areas" relative="path" replace />} />
+      <Route path="/estimates/:id/equipment" element={<Navigate to="../areas" relative="path" replace />} />
+
       <Route
         path="/estimates/:id/general"
         element={

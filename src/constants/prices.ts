@@ -12,6 +12,8 @@ export const DEFAULT_PRICES: Record<string, number> = {
   // Water / General
   "WTR-EVLTN": 150,      // flat
   "GEN-PPE": 50,         // EA
+  "GEN-HAUL": 95,        // per load
+  "GEN-DISP": 75,        // EA (disposal fee)
   "GEN-EMRG": 250,       // flat
   "GEN-SUPV": 250,       // flat (overridden by supervision fee logic)
 
@@ -27,7 +29,9 @@ export const DEFAULT_PRICES: Record<string, number> = {
   "DEM-DW-RM": 0.50,     // SF
   "DEM-INSUL-RM": 0.45,  // SF
   "DEM-BSBD-RM": 1.50,   // LF
-  "DEM-FLOOD-CUT": 1.00, // LF
+  "DEM-FLOOD-CUT": 1.00,     // LF (legacy)
+  "DEM-FLOOD-CUT-2FT": 1.00, // LF
+  "DEM-FLOOD-CUT-4FT": 1.50, // LF
 
   // Demo - flooring
   "DEM-CARP-RM": 0.35,   // SF

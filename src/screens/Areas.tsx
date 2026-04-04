@@ -169,7 +169,7 @@ export function Areas() {
   const { t } = useTranslation();
 
   const [areas, setAreas] = useState<Area[]>([]);
-  const [moduleCompletions, setModuleCompletions] = useState<Record<string, Record<string, number>>>({});
+  const [_moduleCompletions, setModuleCompletions] = useState<Record<string, Record<string, number>>>({});
   const [loading, setLoading] = useState(true);
   const [sheetOpen, setSheetOpen] = useState(false);
   const [editingArea, setEditingArea] = useState<Area | null>(null);
@@ -391,12 +391,6 @@ export function Areas() {
             {/* Room cards */}
             {areas.map((area) => {
               const sf = area.length * area.width;
-              const materialCount = area.materials.length;
-              const areaModules = moduleCompletions[area.id] ?? {};
-              const hasPrep = (areaModules["PREP"] ?? 0) > 0;
-              const hasDemo = (areaModules["DEM"] ?? 0) > 0;
-              const hasCleaning = (areaModules["CLN"] ?? 0) > 0;
-              const hasEquipment = (areaModules["EQP"] ?? 0) > 0;
               return (
                 <button
                   key={area.id}
@@ -437,13 +431,8 @@ export function Areas() {
                     {sf > 0 ? `${Math.round(sf)} SF` : t("areas.noDimensions")}
                   </span>
 
-                  {/* Bottom row: material chip + module dots + note */}
-                  <div style={{ display: "flex", alignItems: "center", gap: "4px", flexWrap: "wrap" }}>
-                    {materialCount > 0 && (
-                      <span style={{ fontSize: "10px", fontWeight: 600, color: "var(--color-primary)", backgroundColor: "var(--color-primary-bg)", borderRadius: "8px", padding: "1px 6px" }}>
-                        {materialCount} mat.
-                      </span>
-                    )}
+                  {/* Bottom row: material note indicator only */}
+                  <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                     {area.material_note && (
                       <span
                         title={t("areas.materialNoteTooltip", { note: area.material_note })}
@@ -452,18 +441,6 @@ export function Areas() {
                       >
                         📝
                       </span>
-                    )}
-                    {hasPrep && (
-                      <span title="Prep" style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: "var(--color-primary)", display: "block" }} />
-                    )}
-                    {hasDemo && (
-                      <span title="Demo" style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: "var(--color-success)", display: "block" }} />
-                    )}
-                    {hasCleaning && (
-                      <span title="Cleaning" style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: "var(--color-warning)", display: "block" }} />
-                    )}
-                    {hasEquipment && (
-                      <span title="Equipment" style={{ width: "7px", height: "7px", borderRadius: "50%", backgroundColor: "var(--color-text-secondary)", display: "block" }} />
                     )}
                   </div>
                 </button>

@@ -21,10 +21,10 @@ interface Estimate {
   job_address: string;
 }
 
-const MODULE_ORDER = ["WTR", "GEN", "DEM", "CLN", "EQP"];
+const MODULE_ORDER = ["GEN", "PREP", "DEM", "CLN", "EQP"];
 const MODULE_LABEL_KEYS: Record<string, string> = {
-  WTR: "total.moduleWater",
   GEN: "total.moduleGeneral",
+  PREP: "total.modulePrep",
   DEM: "total.moduleDemo",
   CLN: "total.moduleCleaning",
   EQP: "total.moduleEquipment",
@@ -63,22 +63,26 @@ export function Present() {
     setLoading(false);
   }
 
-  const byModule = MODULE_ORDER.reduce(
-    (acc, mod) => {
-      const modItems = items.filter((li) => li.module === mod);
-      if (modItems.length > 0) acc[mod] = modItems;
-      return acc;
-    },
-    {} as Record<string, LineItem[]>
-  );
+  // WTR items (e.g. drying evaluation) are merged into GEN for display
+  const byModule: Record<string, LineItem[]> = {};
+  for (const item of items) {
+    const mod = item.module === "WTR" ? "GEN" : item.module;
+    if (!byModule[mod]) byModule[mod] = [];
+    byModule[mod].push(item);
+  }
 
   const grandTotal = items.reduce((sum, li) => sum + li.quantity * li.unit_price, 0);
 
   return (
     <div
       style={{
-        minHeight: "100vh",
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
         backgroundColor: "var(--color-surface)",
+        overflowY: "auto",
         display: "flex",
         flexDirection: "column",
       }}

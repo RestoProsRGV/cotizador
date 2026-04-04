@@ -18,10 +18,10 @@ interface LineItem {
   sort_order: number;
 }
 
-const MODULE_ORDER = ["WTR", "GEN", "DEM", "CLN", "EQP"];
+const MODULE_ORDER = ["GEN", "PREP", "DEM", "CLN", "EQP"];
 const MODULE_LABEL_KEYS: Record<string, string> = {
-  WTR: "total.moduleWater",
   GEN: "total.moduleGeneral",
+  PREP: "total.modulePrep",
   DEM: "total.moduleDemo",
   CLN: "total.moduleCleaning",
   EQP: "total.moduleEquipment",
@@ -63,17 +63,13 @@ export function Total() {
     setLoading(false);
   }
 
-  // Group by module
-  const byModule = MODULE_ORDER.reduce(
-    (acc, mod) => {
-      const moduleItems = items.filter((li) => li.module === mod);
-      if (moduleItems.length > 0) {
-        acc[mod] = moduleItems;
-      }
-      return acc;
-    },
-    {} as Record<string, LineItem[]>
-  );
+  // Group by module — WTR items (drying evaluation) merged into GEN for display
+  const byModule: Record<string, LineItem[]> = {};
+  for (const item of items) {
+    const mod = item.module === "WTR" ? "GEN" : item.module;
+    if (!byModule[mod]) byModule[mod] = [];
+    byModule[mod].push(item);
+  }
 
   const grandTotal = items.reduce((sum, li) => sum + li.quantity * li.unit_price, 0);
 

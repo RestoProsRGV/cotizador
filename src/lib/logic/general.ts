@@ -81,6 +81,20 @@ export function generateGeneralItems(
     },
     {
       module: "GEN",
+      xactimateCode: "GEN-HAUL",
+      name: "Haul debris to dumpster",
+      unit: "load",
+      quantity: 1,
+    },
+    {
+      module: "GEN",
+      xactimateCode: "GEN-DISP",
+      name: "Disposal fee",
+      unit: "EA",
+      quantity: 1,
+    },
+    {
+      module: "GEN",
       xactimateCode: "GEN-SUPV",
       name: `Supervision (${jobSize} job — $${SUPERVISION_FEE[jobSize]})`,
       unit: "flat",

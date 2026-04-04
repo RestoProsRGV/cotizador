@@ -99,12 +99,12 @@ describe("generateGeneralItems", () => {
     expect(codes).toContain("GEN-EMRG");
   });
 
-  it("returns 3 items without emergency", () => {
-    expect(generateGeneralItems(200, false)).toHaveLength(3);
+  it("returns 5 items without emergency", () => {
+    expect(generateGeneralItems(200, false)).toHaveLength(5);
   });
 
-  it("returns 4 items with emergency", () => {
-    expect(generateGeneralItems(200, true)).toHaveLength(4);
+  it("returns 6 items with emergency", () => {
+    expect(generateGeneralItems(200, true)).toHaveLength(6);
   });
 
   it("supervision name reflects small job", () => {
