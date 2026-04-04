@@ -27,7 +27,7 @@ Every development session adds an entry. Format:
 - `index.html` — manifest link, theme-color, apple-mobile-web-app-* meta tags
 
 ### Commits pushed
-- [paste after push]
+- `0843fae` feat: PWA manifest — installable on iPhone home screen
 
 ### Open items
 - Suggestion Rules Manager — Admin desktop UI
