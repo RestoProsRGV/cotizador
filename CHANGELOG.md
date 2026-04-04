@@ -9,6 +9,35 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: April 3, 2026 — QA Review #1
+
+### Decisions made
+- Bottom nav simplified to 5 fixed tabs (no scroll): Setup · Areas · General · Total · Present
+- Prep, Demo, Cleaning, Equipment removed from bottom nav — live exclusively inside AreaDetail
+- Area cards show only name + SF — removed material count badge and colored dots
+- SPA routing fix required: vercel.json rewrite rule added
+- Present to Client is a full-page scroll view, not a modal overlay
+
+### Bugs fixed
+- 🔴 SPA routing: direct URL navigation returned 404 — fixed with vercel.json
+- 🔴 Present to Client scroll: content disappeared on scroll — fixed overflow/height
+- 🟡 General tab: Haul Debris and Disposal not auto-generating — investigated and fixed
+- 🟡 Total screen: "Water" category label incorrect — fixed to correct module label
+- 🟡 Total screen: Prep Work missing from breakdown — fixed aggregation query
+
+### Commits pushed
+- `6bee6c9` vercel.json — SPA rewrite rule, fix 404 on direct URL navigation
+- `f9669d6` fix: nav simplification, scroll bug, general items, total display
+
+### Open items
+- Suggestion Rules Manager — Admin desktop UI
+- Desktop UI routes (/desktop/*)
+- PWA manifest — installable on phone home screen
+- Sentry — error monitoring for PROD
+- PDF output — not yet tested on a real estimate
+
+---
+
 ## Session: April 3, 2026
 
 ### Decisions made
@@ -52,8 +81,6 @@ Every development session adds an entry. Format:
 - Desktop UI routes (/desktop/*)
 - PWA manifest — installable on phone home screen
 - Sentry — error monitoring for PROD
-- Total screen review — not yet tested end-to-end
-- Present-to-client view — not yet tested
 - PDF output — not yet tested on a real estimate
 
 ---
