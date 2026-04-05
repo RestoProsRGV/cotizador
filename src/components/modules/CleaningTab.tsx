@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Trash2, Plus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { CalcInput } from "@/components/ui/CalcInput";
 import { generateCleaningItems, type WaterCategory } from "@/lib/logic/cleaning";
 import { getPrice } from "@/constants/prices";
 
@@ -201,12 +202,9 @@ export function CleaningTab({ estimateId, areaId, areaSf, category }: CleaningTa
 
             {/* Qty + unit + price */}
             <div style={{ display: "flex", alignItems: "center", gap: "4px", flexShrink: 0 }}>
-              <input
-                type="number"
-                inputMode="decimal"
-                min="0"
+              <CalcInput
                 value={item.quantity}
-                onChange={e => updateQty(item.id, parseFloat(e.target.value) || 0)}
+                onChange={val => updateQty(item.id, val)}
                 style={{ width: "56px", height: "36px", border: "1px solid var(--color-border)", borderRadius: "4px", textAlign: "center", fontSize: "13px", backgroundColor: "var(--color-surface)", color: "var(--color-text-primary)" }}
                 aria-label={`${item.name} quantity`}
               />
@@ -254,11 +252,9 @@ export function CleaningTab({ estimateId, areaId, areaSf, category }: CleaningTa
             </div>
             <div style={{ flex: 1 }}>
               <label style={{ fontSize: "11px", color: "var(--color-text-secondary)", display: "block", marginBottom: "4px" }}>{t("cleaning.qty")}</label>
-              <input
-                type="number"
-                inputMode="decimal"
-                value={addForm.quantity}
-                onChange={e => setAddForm(f => ({ ...f, quantity: e.target.value }))}
+              <CalcInput
+                value={parseFloat(addForm.quantity) || 1}
+                onChange={val => setAddForm(f => ({ ...f, quantity: String(val) }))}
                 style={{ width: "100%", height: "48px", border: "1px solid var(--color-border)", borderRadius: "4px", padding: "0 12px", fontSize: "14px", backgroundColor: "var(--color-surface)", color: "var(--color-text-primary)" }}
               />
             </div>

@@ -40,6 +40,41 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: April 5, 2026 — Math Expressions in Quantity Fields
+
+### Decisions made
+- All qty inputs accept arithmetic expressions (+, -, *, /, parentheses) — evaluated on blur via mathjs
+- Invalid expressions flash red border for 1.5 s then revert to previous valid value
+- `type="text"` + `inputMode="decimal"` keeps numeric mobile keyboard while allowing expression strings
+- `useCalcInput` hook + `CalcInput` component — component pattern necessary to use hooks inside .map() lists
+- Supabase always receives the evaluated number, never the raw expression string
+
+### Files created/modified
+- `src/hooks/useCalcInput.ts` — new hook
+- `src/components/ui/CalcInput.tsx` — new component (wraps hook for use in item lists)
+- `src/hooks/__tests__/useCalcInput.test.ts` — 12 tests
+- `src/components/modules/PrepTab.tsx` — CalcInput on qty
+- `src/components/modules/DemoTab.tsx` — CalcInput on qty
+- `src/components/modules/CleaningTab.tsx` — CalcInput on existing-item qty + addForm qty
+- `src/components/modules/EquipmentTab.tsx` — CalcInput inside QtyControl
+- `src/components/modules/DryingChambers.tsx` — CalcInput on L/W/H inputs
+- `package.json` — mathjs added
+
+### Commits pushed
+- (pending)
+
+### Open items
+- Run migrations `20260405000002` and `20260405000003` manually in Supabase SQL Editor
+- Add Vercel env vars for Sentry
+- Run a real job estimate end-to-end
+
+### Deploy verification
+- Tests: 295 passing
+- /gstack:review: ✅ clean
+- Vercel: pending
+
+---
+
 ## Session: April 5, 2026 — Status Flow, Drying Chambers, PDF, Customer Signature
 
 ### Decisions made

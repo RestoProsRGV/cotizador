@@ -13,6 +13,7 @@
 import { useState, useEffect } from "react";
 import { Trash2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { CalcInput } from "@/components/ui/CalcInput";
 import { supabase } from "@/lib/supabase";
 
 interface Chamber {
@@ -252,15 +253,9 @@ export function DryingChambers({ estimateId, areaId, onDehumCountChange }: Dryin
                   >
                     {["L", "W", "H"][i]}
                   </label>
-                  <input
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    step="0.5"
-                    value={chamber[field] || ""}
-                    onChange={(e) =>
-                      handleDimChange(chamber.id, field, parseFloat(e.target.value) || 0)
-                    }
+                  <CalcInput
+                    value={chamber[field] || 0}
+                    onChange={(val) => handleDimChange(chamber.id, field, val)}
                     aria-label={`${chamber.name} ${["length", "width", "height"][i]} ft`}
                     style={{
                       width: "56px",

@@ -185,6 +185,11 @@ Air Scrubbers:  1 per 300 SF of total affected area
 **Why:** Clean vertical rhythm without squishing the badge. Status badge is shown on Total screen where action is taken, not on every screen (avoids Supabase fetch overhead on every tab).
 **Alternative considered:** Always show badge on all tabs — deferred due to cost of fetching estimate status in every tab screen.
 
+### Math expressions in quantity fields
+**Decision:** All qty inputs accept arithmetic expressions (+, -, *, /, parentheses). Evaluated on blur using mathjs. Invalid expressions flash red for 1.5 s and revert to previous value. `type="text"` with `inputMode="decimal"` for mobile keyboard compatibility. Supabase always receives the evaluated number, never the expression string.
+**Why:** Field techs frequently calculate door trim (2 doors × 16 LF), rooms (3 walls × 12 LF), etc. Forcing mental math introduces errors; accepting the expression directly eliminates them.
+**Implementation:** `useCalcInput` hook + `CalcInput` component wrapper. CalcInput is used in place of `<input type="number">` everywhere; component pattern allows hook use inside .map() lists.
+
 ---
 
 ## Future Decisions (Planned, Not Yet Built)

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useTranslation } from "react-i18next";
+import { CalcInput } from "@/components/ui/CalcInput";
 import {
   PREP_SECTIONS,
   ALL_PREP_ITEMS,
@@ -273,12 +274,9 @@ export function PrepTab({ estimateId, areaId, areaName, areaSf, areaPerimeter }:
                         </div>
 
                         {selected && lineItem && (
-                          <input
-                            type="number"
-                            inputMode="decimal"
-                            min="0"
+                          <CalcInput
                             value={lineItem.quantity}
-                            onChange={e => updateQty(lineItem.id, parseFloat(e.target.value) || 0)}
+                            onChange={val => updateQty(lineItem.id, val)}
                             style={{ width: "64px", height: "40px", border: "1px solid var(--color-border)", borderRadius: "4px", textAlign: "center", fontSize: "14px", backgroundColor: "var(--color-surface)", color: "var(--color-text-primary)" }}
                             aria-label={`${def.name} quantity`}
                           />

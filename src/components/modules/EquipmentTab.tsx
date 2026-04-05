@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { calcAirMovers, calcDehumidifiers, calcAirScrubbers } from "@/lib/logic/equipment";
 import { getPrice } from "@/constants/prices";
 import { DryingChambers } from "@/components/modules/DryingChambers";
+import { CalcInput } from "@/components/ui/CalcInput";
 
 interface LineItem {
   id: string;
@@ -55,12 +56,9 @@ function QtyControl({
       >
         −
       </button>
-      <input
-        type="number"
-        inputMode="decimal"
-        min="0"
+      <CalcInput
         value={value}
-        onChange={e => onChange(parseFloat(e.target.value) || 0)}
+        onChange={onChange}
         aria-label={label}
         style={{ width: "48px", height: "40px", border: "1px solid var(--color-border)", borderRadius: "4px", textAlign: "center", fontSize: "14px", backgroundColor: "var(--color-surface)", color: "var(--color-text-primary)" }}
       />
