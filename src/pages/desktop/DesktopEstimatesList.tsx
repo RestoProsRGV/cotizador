@@ -10,6 +10,12 @@ export function DesktopEstimatesList() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [toast, setToast] = useState<string | null>(null);
+
+  function showToast(msg: string) {
+    setToast(msg);
+    setTimeout(() => setToast(null), 3000);
+  }
 
   const { data: estimates = [], isLoading } = useQuery({
     queryKey: ["desktop-estimates"],
@@ -70,7 +76,7 @@ export function DesktopEstimatesList() {
           </h1>
           <button
             type="button"
-            onClick={() => navigate("/estimates/new")}
+            onClick={() => showToast("Create estimates from the mobile app")}
             style={{
               display: "flex",
               alignItems: "center",
@@ -157,7 +163,7 @@ export function DesktopEstimatesList() {
             backgroundColor: "#fff",
             border: "1px solid #e5e7eb",
             borderRadius: "8px",
-            overflow: "hidden",
+            overflowX: "auto",
           }}
         >
           {isLoading ? (
@@ -183,6 +189,31 @@ export function DesktopEstimatesList() {
           )}
         </div>
       </div>
+
+      {/* Toast notification */}
+      {toast && (
+        <div
+          role="status"
+          aria-live="polite"
+          style={{
+            position: "fixed",
+            bottom: "24px",
+            left: "50%",
+            transform: "translateX(-50%)",
+            backgroundColor: "#1e2535",
+            color: "#fff",
+            padding: "12px 20px",
+            borderRadius: "8px",
+            fontSize: "14px",
+            fontWeight: 500,
+            zIndex: 500,
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {toast}
+        </div>
+      )}
     </DesktopShell>
   );
 }

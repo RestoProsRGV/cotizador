@@ -379,13 +379,21 @@ function GeneralTab({ lineItems }: { lineItems: LineItem[] }) {
   const genItems = lineItems.filter((li) => li.module === "GEN" || li.module === "WTR");
   const subtotal = genItems.reduce((s, li) => s + li.quantity * li.unit_price, 0);
 
+  if (genItems.length === 0) {
+    return (
+      <p style={{ fontSize: "14px", color: "#9ca3af", textAlign: "center", padding: "48px 0" }}>
+        No general items yet.
+      </p>
+    );
+  }
+
   return (
     <div
       style={{
         backgroundColor: "#fff",
         border: "1px solid #e5e7eb",
         borderRadius: "8px",
-        overflow: "hidden",
+        overflowX: "auto",
       }}
     >
       <table style={{ width: "100%", borderCollapse: "collapse" }}>

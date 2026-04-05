@@ -21,7 +21,7 @@ export function DesktopShell({ children, breadcrumbs = [] }: DesktopShellProps) 
         }}
       >
         <DesktopHeader breadcrumbs={breadcrumbs} />
-        <main style={{ flex: 1, overflowY: "auto" }}>{children}</main>
+        <main style={{ flex: 1 }}>{children}</main>
       </div>
     </div>
   );
