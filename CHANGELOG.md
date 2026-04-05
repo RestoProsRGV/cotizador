@@ -225,13 +225,13 @@ Every development session adds an entry. Format:
 - `CLAUDE.md` — "Supabase table names" note added: always use `users`, never `profiles`
 
 ### Commits pushed
-- (pending)
+- `e60656e` fix: RLS policy uses users table not profiles + CLAUDE.md note
 
 ### Open items
 - (same as previous session)
 
 ### Deploy verification
-- Commit: (pending)
+- Commit: `e60656e`
 - Tests: 263 passing
 - /gstack:review: ✅ clean
 - Vercel: READY ✅
