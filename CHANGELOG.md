@@ -231,13 +231,13 @@ Read CLAUDE.md, docs/ARCHITECTURE.md, docs/MODULES.md, docs/CALCULATIONS.md, DEC
 ```
 
 ### Commits pushed
-- (pending)
+- `386b88a` docs: split CLAUDE.md into domain files (169 → 91 lines)
 
 ### Open items
 - (same as previous session)
 
 ### Deploy verification
-- Commit: (pending)
+- Commit: `386b88a`
 - Tests: 263 passing
 - /gstack:review: ✅ clean
 - Vercel: READY ✅
