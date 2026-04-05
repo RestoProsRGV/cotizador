@@ -230,7 +230,7 @@ Every development session adds an entry. Format:
 - `DECISIONS.md` — service worker caching strategy recorded
 
 ### Commits pushed
-- (pending)
+- `54cd60c` feat: service worker caching + OfflineBanner — Workbox 7 Cache First/Network First
 
 ### Open items
 - Write queuing (offline mutations) — deferred, complex
@@ -240,7 +240,7 @@ Every development session adds an entry. Format:
 - Add Vercel env vars for Sentry
 
 ### Deploy verification
-- Commit: (pending)
+- Commit: `54cd60c`
 - Tests: 267 passing
 - /gstack:review: ✅ clean
 - Vercel: READY ✅
