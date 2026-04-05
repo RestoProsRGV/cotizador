@@ -165,6 +165,26 @@ Dehumidifiers:  cubic feet of chamber ÷ 100
 Air Scrubbers:  1 per 300 SF of total affected area
 ```
 
+### Estimate status flow: Draft → Approved → Invoiced only
+**Decision:** Status transitions are one-directional: Draft → Approved → Invoiced. No backwards transitions.
+**Why:** Once a client signs and approves, the estimate must not be "un-approved" by accident. Invoiced is a final billing state.
+**Alternative considered:** Allow reverting status — rejected because it could invalidate a signed record.
+
+### Customer signature stored as base64 PNG data URL
+**Decision:** `customer_signature_url` column stores the base64 PNG directly in the `estimates` table (not in Supabase Storage).
+**Why:** Signature images are small (~5-20 KB) and tied tightly to the estimate record. No extra storage bucket/policy needed.
+**Alternative considered:** Upload to Supabase Storage bucket — rejected because it adds a bucket policy, upload step, and signed-URL expiry complexity for negligible file size savings.
+
+### Drying Chambers override IICRC formula
+**Decision:** When at least one drying chamber is defined for an area, the total chamber CF drives dehumidifier count. When no chambers are defined, the IICRC S500 floor-area formula applies.
+**Why:** Actual drying containment volumes differ from raw room SF. A tech who sets up a smaller chamber gets a more accurate equipment count.
+**Alternative considered:** Always use IICRC formula — rejected because chambers give a more precise calculation.
+
+### AppHeader statusBadge: height increases to 64px
+**Decision:** When `statusBadge` prop is present on AppHeader, height increases from 56px to 64px to accommodate the dot + label row below the title.
+**Why:** Clean vertical rhythm without squishing the badge. Status badge is shown on Total screen where action is taken, not on every screen (avoids Supabase fetch overhead on every tab).
+**Alternative considered:** Always show badge on all tabs — deferred due to cost of fetching estimate status in every tab screen.
+
 ---
 
 ## Future Decisions (Planned, Not Yet Built)

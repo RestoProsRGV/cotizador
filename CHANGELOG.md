@@ -40,6 +40,50 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: April 5, 2026 — Status Flow, Drying Chambers, PDF, Customer Signature
+
+### Decisions made
+- Status flow: Draft → Approved → Invoiced, no backwards transitions. Confirmation BottomSheet + toast on Total screen. Status badge in AppHeader (64px height when present).
+- Drying Chambers UI: per-area L×W×H inputs → CF → dehumidifier count. When chambers exist, their total CF overrides the IICRC floor-area formula. `onDehumCountChange(null)` signals fallback to IICRC.
+- PDF: `MODULE_DISPLAY_ORDER = ["GEN","PREP","DEM","CLN","EQP"]` fixes module ordering. WTR items merged into GEN. Signature section appended (base64 image or blank approval line).
+- Customer signature: react-signature-canvas finger/stylus pad in Present screen. Saves base64 PNG to `customer_signature_url`, sets `approved_at`, flips status to `approved`. Shows read-only signature when already signed.
+- Desktop: [···] overflow menu in DesktopEstimateDetail for status transitions + delete + PDF download.
+- Back navigation: all estimate screens navigate to `/estimates` (not `navigate(-1)`) for PWA reliability.
+
+### Files created/modified
+- `src/components/layout/AppHeader.tsx` — statusBadge prop
+- `src/screens/Total.tsx` — full status flow UI
+- `src/screens/Present.tsx` — signature pad + success screen
+- `src/screens/EstimatesList.tsx` — chip-style status badges
+- `src/pdf/EstimatePDF.tsx` — PREP module, display order, signature section
+- `src/components/modules/DryingChambers.tsx` — new component
+- `src/components/modules/EquipmentTab.tsx` — DryingChambers integration
+- `src/pages/desktop/DesktopEstimateDetail.tsx` — overflow menu, delete, PDF
+- `src/locales/en.json` — status, dryingChambers, present, total strings
+- `supabase/migrations/20260405000002_drying_chambers_dimensions.sql`
+- `supabase/migrations/20260405000003_customer_signature.sql`
+- `docs/SPEC-status-flow.md`, `docs/SPEC-customer-signature.md`
+- `src/components/modules/__tests__/DryingChambers.test.tsx` — 7 tests
+- `src/screens/__tests__/TotalStatusFlow.test.tsx` — 7 tests
+
+### Commits pushed
+- `b2c196c` fix: back navigation — all estimate screens navigate to /estimates
+- `c979a88` feat: status flow, drying chambers, PDF fixes, customer signature
+
+### Open items
+- Run migrations `20260405000002` and `20260405000003` manually in Supabase SQL Editor
+- Add Vercel env vars for Sentry (VITE_SENTRY_DSN etc.)
+- Run a real job estimate end-to-end to validate pricing and formulas
+- Setup screen QA on device
+
+### Deploy verification
+- Commit: c979a88
+- Tests: 283 passing
+- /gstack:review: ✅ clean
+- Vercel: pending
+
+---
+
 ## Session: April 3, 2026 — PWA Manifest
 
 ### Decisions made
