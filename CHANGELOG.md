@@ -235,7 +235,7 @@ Every development session adds an entry. Format:
 - `DECISIONS.md` — DB-driven + hardcoded fallback decision
 
 ### Commits pushed
-- (pending)
+- `b727b73` feat: Suggestion Rules Manager — /desktop/admin/suggestion-rules
 
 ### Open items
 - Apply migration SQL to Supabase if suggestion_rules table doesn't exist yet
@@ -247,7 +247,7 @@ Every development session adds an entry. Format:
 - Service worker caching strategy (deferred)
 
 ### Deploy verification
-- Commit: (pending)
+- Commit: `b727b73`
 - Tests: 263 passing
 - /gstack:review: ✅ clean
 - Vercel: READY ✅
