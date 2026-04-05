@@ -211,6 +211,33 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: April 5, 2026 — RLS Policy Table Name Fix
+
+### Decisions made
+- User profiles table is `users`, NOT `profiles` — documented in CLAUDE.md to prevent recurrence
+- No source code changes needed (DesktopSuggestionRules.tsx never queried `profiles`)
+
+### Bugs fixed
+- `docs/SPEC-suggestion-rules.md` migration SQL referenced `profiles` — corrected to `users`
+
+### Files modified
+- `docs/SPEC-suggestion-rules.md` — RLS policy SQL: profiles → users
+- `CLAUDE.md` — "Supabase table names" note added: always use `users`, never `profiles`
+
+### Commits pushed
+- (pending)
+
+### Open items
+- (same as previous session)
+
+### Deploy verification
+- Commit: (pending)
+- Tests: 263 passing
+- /gstack:review: ✅ clean
+- Vercel: READY ✅
+
+---
+
 ## Session: April 5, 2026 — Suggestion Rules Manager
 
 ### Decisions made

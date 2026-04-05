@@ -68,7 +68,7 @@ create table suggestion_rules (
 alter table suggestion_rules enable row level security;
 
 create policy "tenant_isolation" on suggestion_rules
-  using (tenant_id = (select tenant_id from profiles where id = auth.uid()));
+  using (tenant_id = (select tenant_id from users where id = auth.uid()));
 ```
 
 If the table doesn't exist, apply the migration via Supabase MCP in claude.ai.

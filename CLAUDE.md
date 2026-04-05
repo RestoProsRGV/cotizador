@@ -158,6 +158,9 @@ Module names use i18n keys (`nav.prep`, `nav.demo`, etc.) — may change for mar
 ## Sentry
 Sentry is prod-only — never mock or initialize in tests. `initSentry()` is a no-op unless `import.meta.env.PROD` is true.
 
+## Supabase table names
+User profiles table: `users` (NOT `profiles`). Always use `users` in RLS policies and queries.
+
 ## Supabase MCP in claude.ai
 Supabase MCP is connected to claude.ai (not just Claude Code).
 Use it to audit production data directly — verify line_items saved correctly,
