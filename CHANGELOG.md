@@ -211,6 +211,53 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: April 5, 2026 — Desktop UI QA Fixes
+
+### Decisions made
+- "+ New Estimate" on desktop shows toast "Create estimates from the mobile app" — no full desktop create flow
+- Table card overflow: `overflow: hidden` → `overflowX: auto` to allow all 8 columns to show without clipping
+- `DesktopShell` main: removed inner `overflowY: auto` — page scrolls naturally via window, no inner scroll context
+
+### Bugs fixed
+- 🔴 "+ New Estimate" button navigated to `/estimates/new` (mobile screen) — fixed with toast
+- 🟡 Table card clipped columns at narrow desktop widths — fixed with `overflowX: auto`
+- 🟡 GeneralTab showed empty `<table>` when no items — fixed with empty state paragraph
+- 🟡 DesktopShell main inner scroll context could conflict with fixed sidebar — removed
+
+### QA results — everything else was clean
+- ✅ Table full-width at 1280px+
+- ✅ All 8 columns visible: Client, ID, Type, Category, Date, Total, Status, Actions
+- ✅ Row hover (light blue background) works
+- ✅ Search filters by name, address, ID
+- ✅ Status badges: Draft=gray, Approved=green, Invoiced=blue
+- ✅ All 4 tabs render: Overview, Areas, General, Total
+- ✅ Overview 60/40 two-column layout
+- ✅ Area cards grid with hover states
+- ✅ AreaSlideOver opens on area card click, 480px panel, closes on backdrop click
+- ✅ Total tab breakdown + Present to Client button
+- ✅ Breadcrumb "Estimates /" links back to /desktop/estimates
+- ✅ Sidebar exactly 64px, active icon blue, avatar shows user initial
+- ✅ No overflow or layout shift at 1024px+
+
+### Commits pushed
+- `e9aa682` fix: desktop UI QA — New Estimate toast, table overflow, general empty state
+
+### Open items
+- Desktop UI QA on real wide screen ✅ done
+- Add Vercel env vars for Sentry (VITE_SENTRY_DSN etc.)
+- Run a real job estimate end-to-end to validate pricing
+- Setup screen QA on device
+- Suggestion Rules Manager — Admin desktop UI
+- Service worker caching strategy (deferred)
+
+### Deploy verification
+- Commit: `e9aa682`
+- Tests: 256 passing
+- /gstack:review: ✅ clean
+- Vercel: READY ✅
+
+---
+
 ## Session: April 5, 2026 — Sentry Error Monitoring
 
 ### Decisions made
