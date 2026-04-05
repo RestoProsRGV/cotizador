@@ -48,6 +48,11 @@ tracesSampleRate: 0.2 (20% of transactions). Auth errors are filtered out
 Auth errors are normal logout/session-expiry behavior, not application bugs.
 One root boundary catches all unhandled errors without wrapping every component.
 
+### Service Worker caching strategy
+**Decision:** Cache First for static assets (JS, CSS, fonts, images). Network First for Supabase API with 5s timeout and 1hr cache fallback. Write queuing deferred — offline is read-only for now. OfflineBanner informs the user without blocking the app.
+**Why:** Field techs may work in homes with bad WiFi or no signal. Static assets are safe to serve from cache (only change on deploy). Supabase data must be fresh when possible but should fall back gracefully when offline. Write queuing adds significant complexity (conflict resolution, sync strategy) and is deferred to a dedicated session.
+**Alternative considered:** Full offline-first with write queue — rejected for this session due to complexity; deferred.
+
 ### Suggestion Rules — DB-driven with hardcoded fallback
 **Decision:** Admin UI reads/writes the `suggestion_rules` table in Supabase.
 The field app (Demo.tsx, Prep.tsx) continues to use hardcoded rules from

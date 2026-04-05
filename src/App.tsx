@@ -15,6 +15,7 @@ import { DesktopEstimatesList } from "@/pages/desktop/DesktopEstimatesList";
 import { DesktopEstimateDetail } from "@/pages/desktop/DesktopEstimateDetail";
 import { DesktopAdminPrices } from "@/pages/desktop/DesktopAdminPrices";
 import { DesktopSuggestionRules } from "@/pages/desktop/DesktopSuggestionRules";
+import { OfflineBanner } from "@/components/OfflineBanner";
 
 // Route architecture:
 //   /                → RootRedirect: desktop browser → /desktop/estimates, mobile/PWA → /estimates
@@ -43,7 +44,9 @@ function EstimatesEntryPoint() {
 
 export function App() {
   return (
-    <Routes>
+    <>
+      <OfflineBanner />
+      <Routes>
       {/* Public routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/estimates/:id/present" element={<Present />} />
@@ -160,5 +163,6 @@ export function App() {
         }
       />
     </Routes>
+    </>
   );
 }

@@ -211,6 +211,42 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: April 5, 2026 — Service Worker Caching
+
+### Decisions made
+- Cache First for static assets (JS, CSS, fonts, images) via Workbox 7 CDN
+- Network First for Supabase API — 5s timeout, 1hr cache fallback, 100 entry max
+- Cache version `v1` — old caches purged on activate
+- Write queuing deferred — offline mode is read-only for now
+- OfflineBanner: yellow fixed banner at top, listens to online/offline events, informational only
+
+### Files created
+- `src/components/OfflineBanner.tsx` — online/offline event listener, yellow banner
+- `src/components/__tests__/OfflineBanner.test.tsx` — 4 tests
+
+### Files modified
+- `public/sw.js` — replaced pass-through with Workbox 7 Cache First + Network First strategy
+- `src/App.tsx` — `<OfflineBanner />` added above `<Routes>`
+- `DECISIONS.md` — service worker caching strategy recorded
+
+### Commits pushed
+- (pending)
+
+### Open items
+- Write queuing (offline mutations) — deferred, complex
+- Manual QA: Chrome DevTools → Application → Service Workers → check Offline → reload
+- Run real job estimate end-to-end
+- Setup screen QA on device
+- Add Vercel env vars for Sentry
+
+### Deploy verification
+- Commit: (pending)
+- Tests: 267 passing
+- /gstack:review: ✅ clean
+- Vercel: READY ✅
+
+---
+
 ## Session: April 5, 2026 — CLAUDE.md Split
 
 ### Decisions made
