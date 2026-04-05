@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Eye } from "lucide-react";
+import { Eye, MoreHorizontal, FileDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { DesktopShell } from "@/layouts/DesktopShell";
 import { AreaSlideOver, type SlideOverArea, type SlideOverLineItem } from "@/components/desktop/AreaSlideOver";
 import { shortId } from "@/components/desktop/EstimatesTable";
+import { useEstimatePDF } from "@/hooks/useEstimatePDF";
 
 interface Estimate {
   id: string;
@@ -565,6 +566,41 @@ export function DesktopEstimateDetail() {
   const [areas, setAreas] = useState<Area[]>([]);
   const [lineItems, setLineItems] = useState<LineItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [overflowOpen, setOverflowOpen] = useState(false);
+  const [confirmModal, setConfirmModal] = useState<"approve" | "invoice" | "delete" | null>(null);
+  const [mutating, setMutating] = useState(false);
+  const overflowRef = useRef<HTMLDivElement>(null);
+  const { downloadPDF, generating } = useEstimatePDF(id ?? "");
+
+  // Close overflow menu on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (overflowRef.current && !overflowRef.current.contains(e.target as Node)) {
+        setOverflowOpen(false);
+      }
+    }
+    if (overflowOpen) document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [overflowOpen]);
+
+  async function handleStatusChange(action: "approve" | "invoice") {
+    if (!id) return;
+    const newStatus = action === "approve" ? "approved" : "invoiced";
+    setMutating(true);
+    const { error } = await supabase.from("estimates").update({ status: newStatus }).eq("id", id);
+    setMutating(false);
+    setConfirmModal(null);
+    if (!error && estimate) setEstimate({ ...estimate, status: newStatus });
+  }
+
+  async function handleDelete() {
+    if (!id) return;
+    setMutating(true);
+    await supabase.from("estimates").delete().eq("id", id);
+    setMutating(false);
+    setConfirmModal(null);
+    navigate("/desktop/estimates");
+  }
 
   useEffect(() => {
     async function load() {
@@ -666,7 +702,31 @@ export function DesktopEstimateDetail() {
               <Badge label={statusLabel} variant={statusVariant} />
             </div>
           </div>
-          <div style={{ display: "flex", gap: "8px", flexShrink: 0 }}>
+          <div style={{ display: "flex", gap: "8px", flexShrink: 0, alignItems: "center" }}>
+            {/* PDF download */}
+            <button
+              type="button"
+              onClick={downloadPDF}
+              disabled={generating}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "6px",
+                backgroundColor: "transparent",
+                color: "#6b7280",
+                border: "1px solid #e5e7eb",
+                borderRadius: "6px",
+                padding: "8px 14px",
+                fontSize: "14px",
+                fontWeight: 500,
+                cursor: generating ? "not-allowed" : "pointer",
+                opacity: generating ? 0.6 : 1,
+              }}
+            >
+              <FileDown size={16} aria-hidden />
+              {generating ? "Generating…" : "PDF"}
+            </button>
+
             <button
               type="button"
               onClick={handlePresentToClient}
@@ -687,6 +747,76 @@ export function DesktopEstimateDetail() {
               <Eye size={16} aria-hidden />
               Present to Client
             </button>
+
+            {/* Overflow menu */}
+            <div ref={overflowRef} style={{ position: "relative" }}>
+              <button
+                type="button"
+                onClick={() => setOverflowOpen((v) => !v)}
+                aria-label="More actions"
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  backgroundColor: "transparent",
+                  border: "1px solid #e5e7eb",
+                  borderRadius: "6px",
+                  cursor: "pointer",
+                  color: "#6b7280",
+                }}
+              >
+                <MoreHorizontal size={18} aria-hidden />
+              </button>
+              {overflowOpen && (
+                <div
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    top: "calc(100% + 4px)",
+                    backgroundColor: "#fff",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "8px",
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
+                    minWidth: "200px",
+                    zIndex: 50,
+                    overflow: "hidden",
+                  }}
+                >
+                  {estimate.status === "draft" && (
+                    <button
+                      type="button"
+                      onClick={() => { setOverflowOpen(false); setConfirmModal("approve"); }}
+                      style={{ width: "100%", padding: "12px 16px", textAlign: "left", fontSize: "14px", color: "#10b981", fontWeight: 500, border: "none", background: "none", cursor: "pointer", display: "block" }}
+                    >
+                      ✓ Mark as Approved
+                    </button>
+                  )}
+                  {estimate.status === "approved" && (
+                    <button
+                      type="button"
+                      onClick={() => { setOverflowOpen(false); setConfirmModal("invoice"); }}
+                      style={{ width: "100%", padding: "12px 16px", textAlign: "left", fontSize: "14px", color: "#2196F3", fontWeight: 500, border: "none", background: "none", cursor: "pointer", display: "block" }}
+                    >
+                      Mark as Invoiced
+                    </button>
+                  )}
+                  {estimate.status === "draft" && (
+                    <>
+                      <div style={{ height: "1px", backgroundColor: "#f3f4f6", margin: "4px 0" }} />
+                      <button
+                        type="button"
+                        onClick={() => { setOverflowOpen(false); setConfirmModal("delete"); }}
+                        style={{ width: "100%", padding: "12px 16px", textAlign: "left", fontSize: "14px", color: "#ef4444", fontWeight: 500, border: "none", background: "none", cursor: "pointer", display: "block" }}
+                      >
+                        Delete Estimate
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
@@ -745,6 +875,78 @@ export function DesktopEstimateDetail() {
           <TotalTab lineItems={lineItems} onPresentToClient={handlePresentToClient} />
         )}
       </div>
+
+      {/* Confirmation modal */}
+      {confirmModal && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.4)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+          }}
+          onClick={() => !mutating && setConfirmModal(null)}
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: "12px",
+              padding: "24px",
+              maxWidth: "400px",
+              width: "90%",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
+            }}
+          >
+            <h2 style={{ fontSize: "17px", fontWeight: 700, color: "#111827", margin: "0 0 12px" }}>
+              {confirmModal === "approve" && "Mark as Approved?"}
+              {confirmModal === "invoice" && "Mark as Invoiced?"}
+              {confirmModal === "delete" && "Delete Estimate?"}
+            </h2>
+            <p style={{ fontSize: "14px", color: "#6b7280", margin: "0 0 20px", lineHeight: 1.6 }}>
+              {confirmModal === "approve" && "This means the client has agreed to the scope and price."}
+              {confirmModal === "invoice" && "This means payment has been collected or invoiced."}
+              {confirmModal === "delete" && "This will permanently delete the estimate and all its data. This cannot be undone."}
+            </p>
+            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
+              <button
+                type="button"
+                onClick={() => setConfirmModal(null)}
+                disabled={mutating}
+                style={{ padding: "8px 16px", borderRadius: "6px", border: "1px solid #e5e7eb", background: "none", fontSize: "14px", color: "#6b7280", cursor: "pointer" }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={mutating}
+                onClick={() => {
+                  if (confirmModal === "delete") handleDelete();
+                  else handleStatusChange(confirmModal);
+                }}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: "6px",
+                  border: "none",
+                  backgroundColor: confirmModal === "delete" ? "#ef4444" : "#2196F3",
+                  color: "#fff",
+                  fontSize: "14px",
+                  fontWeight: 600,
+                  cursor: mutating ? "not-allowed" : "pointer",
+                  opacity: mutating ? 0.7 : 1,
+                }}
+              >
+                {mutating ? "…" : confirmModal === "approve" ? "Mark Approved" : confirmModal === "invoice" ? "Mark Invoiced" : "Delete"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </DesktopShell>
   );
 }

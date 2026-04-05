@@ -37,12 +37,11 @@ function categoryLabel(job_type: string, category: string | null): string {
   return category.toUpperCase().replace("CAT", "Cat ");
 }
 
-function statusColor(status: string): string {
+function statusChip(status: string): { bg: string; color: string } {
   switch (status) {
-    case "approved": return "var(--color-success)";
-    case "declined": return "var(--color-error)";
-    case "presented": return "var(--color-primary)";
-    default: return "var(--color-text-secondary)";
+    case "approved":  return { bg: "#d1fae5", color: "#065f46" };
+    case "invoiced":  return { bg: "#dbeafe", color: "#1e40af" };
+    default:          return { bg: "#f3f4f6", color: "#6b7280" }; // draft + unknown
   }
 }
 
@@ -237,7 +236,11 @@ export function EstimatesList() {
                       <span className="text-xs" style={{ color: "var(--color-text-secondary)" }}>·</span>
                       <span
                         className="text-xs font-medium"
-                        style={{ color: statusColor(est.status) }}
+                        style={{
+                          ...statusChip(est.status),
+                          padding: "2px 7px",
+                          borderRadius: "10px",
+                        }}
                       >
                         {est.status.charAt(0).toUpperCase() + est.status.slice(1)}
                       </span>

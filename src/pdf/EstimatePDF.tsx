@@ -15,6 +15,7 @@ import {
   Page,
   Text,
   View,
+  Image,
   StyleSheet,
   Font,
 } from "@react-pdf/renderer";
@@ -180,15 +181,20 @@ export interface EstimatePDFProps {
   jobType: string;
   category: string | null;
   lineItems: PDFLineItem[];
+  /** Base64 PNG data URL of customer signature, if signed */
+  customerSignatureUrl?: string | null;
+  /** ISO timestamp of approval */
+  approvedAt?: string | null;
 }
 
 const MODULE_LABELS: Record<string, string> = {
-  DEM: "Demolition",
-  CLN: "Cleaning",
-  EQP: "Equipment",
-  GEN: "General",
-  WTR: "Water",
-  DEB: "Debris",
+  GEN:  "General",
+  PREP: "Prep Work",
+  DEM:  "Demolition",
+  CLN:  "Cleaning",
+  EQP:  "Equipment",
+  WTR:  "Water",
+  DEB:  "Debris",
 };
 
 function fmt(n: number): string {
@@ -203,6 +209,8 @@ function shortId(id: string): string {
   return `EST-${id.slice(0, 6).toUpperCase()}`;
 }
 
+const MODULE_DISPLAY_ORDER = ["GEN", "PREP", "DEM", "CLN", "EQP"];
+
 export function EstimatePDF({
   estimateId,
   clientName,
@@ -211,14 +219,23 @@ export function EstimatePDF({
   jobType,
   category,
   lineItems,
+  customerSignatureUrl,
+  approvedAt,
 }: EstimatePDFProps) {
-  // Group by module
-  const modules = Array.from(new Set(lineItems.map((i) => i.module)));
-  const grouped = modules.map((mod) => ({
-    module: mod,
-    label: MODULE_LABELS[mod] ?? mod,
-    items: lineItems.filter((i) => i.module === mod),
-  }));
+  // Group by module in display order; WTR merged into GEN
+  const byMod: Record<string, PDFLineItem[]> = {};
+  for (const item of lineItems) {
+    const key = item.module === "WTR" ? "GEN" : item.module;
+    if (!byMod[key]) byMod[key] = [];
+    byMod[key].push(item);
+  }
+  const grouped = MODULE_DISPLAY_ORDER
+    .filter((m) => byMod[m] !== undefined)
+    .map((mod) => ({
+      module: mod,
+      label: MODULE_LABELS[mod] ?? mod,
+      items: byMod[mod] ?? [],
+    }));
 
   const grandTotal = lineItems.reduce(
     (sum, item) => sum + item.quantity * item.unit_price,
@@ -302,6 +319,28 @@ export function EstimatePDF({
           <Text style={styles.totalLabel}>Total</Text>
           <Text style={styles.totalAmount}>${fmt(grandTotal)}</Text>
         </View>
+
+        {/* Signature section */}
+        {customerSignatureUrl ? (
+          <View style={{ marginTop: 20 }}>
+            <Text style={{ fontSize: 8, color: GRAY, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6 }}>
+              Customer Signature
+            </Text>
+            {/* react-pdf Image accepts base64 data URLs */}
+            <Image src={customerSignatureUrl as string} style={{ height: 60 }} />
+            {approvedAt && (
+              <Text style={{ fontSize: 7, color: GRAY, marginTop: 4 }}>
+                Approved on {formatDate(approvedAt)}
+              </Text>
+            )}
+          </View>
+        ) : (
+          <View style={{ marginTop: 24 }}>
+            <View style={{ borderTopWidth: 1, borderColor: BORDER, width: "50%", paddingTop: 6 }}>
+              <Text style={{ fontSize: 7, color: GRAY }}>Approved by: ___________________________</Text>
+            </View>
+          </View>
+        )}
 
         {/* Footer */}
         <View style={styles.footer} fixed>

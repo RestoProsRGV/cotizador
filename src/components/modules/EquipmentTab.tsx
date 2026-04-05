@@ -4,6 +4,7 @@ import { Wind, Droplets, Filter } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { calcAirMovers, calcDehumidifiers, calcAirScrubbers } from "@/lib/logic/equipment";
 import { getPrice } from "@/constants/prices";
+import { DryingChambers } from "@/components/modules/DryingChambers";
 
 interface LineItem {
   id: string;
@@ -93,6 +94,9 @@ export function EquipmentTab({ estimateId, areaId, area, category }: EquipmentTa
   const [dehumDays, setDehumDays] = useState(3);
   const [scrubberQty, setScrubberQty] = useState(0);
   const [scrubberDays, setScrubberDays] = useState(3);
+
+  // When drying chambers exist, overrides the IICRC dehumidifier count
+  const [chamberDehumCount, setChamberDehumCount] = useState<number | null>(null);
 
   useEffect(() => {
     loadData();
@@ -230,10 +234,31 @@ export function EquipmentTab({ estimateId, areaId, area, category }: EquipmentTa
     );
   }
 
+  // Effective dehumidifier count: chambers override IICRC formula
+  const effectiveDehumQty = chamberDehumCount !== null ? chamberDehumCount : dehumQty;
+
   return (
     <div style={{ padding: "16px", display: "flex", flexDirection: "column", gap: "12px" }}>
+      {/* Drying Chambers section — above equipment cards */}
+      <DryingChambers
+        estimateId={estimateId}
+        areaId={areaId}
+        onDehumCountChange={(count) => {
+          setChamberDehumCount(count);
+          if (count !== null && count !== dehumQty) {
+            setDehumQty(count);
+            updateItem("EQP-DH-LG", count, dehumDays);
+          }
+        }}
+      />
+
       <p style={{ fontSize: "12px", color: "var(--color-text-secondary)", marginBottom: "4px" }}>
         {t("equipment.iicrcNote")}
+        {chamberDehumCount !== null && (
+          <span style={{ marginLeft: "6px", color: "var(--color-primary)", fontWeight: 500 }}>
+            · {t("dryingChambers.title")}: {chamberDehumCount} dehumidifiers
+          </span>
+        )}
       </p>
 
       {/* Air Movers */}
@@ -281,18 +306,18 @@ export function EquipmentTab({ estimateId, areaId, area, category }: EquipmentTa
             <span style={{ fontSize: "16px", fontWeight: 600, color: "var(--color-text-primary)" }}>{t("equipment.dehumidifier")}</span>
           </div>
           <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-primary)" }}>
-            {formatCurrency(dehumQty * dehumDays * getPrice("EQP-DH-LG"))}
+            {formatCurrency(effectiveDehumQty * dehumDays * getPrice("EQP-DH-LG"))}
           </span>
         </div>
         <p style={{ fontSize: "12px", color: "var(--color-text-secondary)", margin: 0 }}>
-          {t("equipment.dehumFormula", { qty: dehumQty })}
+          {t("equipment.dehumFormula", { qty: effectiveDehumQty })}
         </p>
         <div style={{ display: "flex", alignItems: "center", gap: "16px", flexWrap: "wrap" }}>
           <div>
             <p style={{ fontSize: "11px", color: "var(--color-text-secondary)", margin: "0 0 4px" }}>{t("equipment.units")}</p>
             <QtyControl
-              value={dehumQty}
-              onChange={v => { setDehumQty(v); updateItem("EQP-DH-LG", v, dehumDays); }}
+              value={effectiveDehumQty}
+              onChange={v => { setDehumQty(v); setChamberDehumCount(null); updateItem("EQP-DH-LG", v, dehumDays); }}
               label={t("equipment.dehumidifier")}
             />
           </div>

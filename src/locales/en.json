@@ -177,12 +177,41 @@
     "moduleEquipment": "Equipment",
     "grandTotal": "Total",
     "editEstimate": "Edit Estimate",
-    "presentToClient": "Present to Client"
+    "presentToClient": "Present to Client",
+    "downloadPDF": "Download PDF",
+    "generatingPDF": "Generating PDF...",
+    "markApproved": "Mark as Approved",
+    "markInvoiced": "Mark as Invoiced",
+    "invoicedLabel": "Invoiced ✓",
+    "confirmApproveTitle": "Mark as Approved?",
+    "confirmApproveBody": "This means the client has agreed to the scope and price.",
+    "confirmApproveAction": "Confirm — Mark Approved",
+    "confirmInvoiceTitle": "Mark as Invoiced?",
+    "confirmInvoiceBody": "This means payment has been collected or invoiced.",
+    "confirmInvoiceAction": "Confirm — Mark Invoiced",
+    "toastApproved": "Estimate marked as approved",
+    "toastInvoiced": "Estimate marked as invoiced",
+    "toastError": "Could not update status. Try again."
+  },
+  "status": {
+    "draft": "Draft",
+    "approved": "Approved",
+    "invoiced": "Invoiced"
   },
   "present": {
     "scopeOfWork": "Scope of Work",
     "validityNote": "This estimate is valid for 14 days.",
-    "approve": "Approve Estimate"
+    "approve": "Approve Estimate",
+    "signatureTitle": "Customer Signature",
+    "signatureHint": "Touch or use stylus to sign above",
+    "clearSignature": "Clear",
+    "acceptAndApprove": "Accept & Approve",
+    "saving": "Saving...",
+    "approvedTitle": "Estimate Approved ✓",
+    "approvedSubtitle": "Signed by {{clientName}}",
+    "approvedOn": "Approved on {{date}}",
+    "done": "Done",
+    "alreadySigned": "Already signed"
   },
   "login": {
     "subtitle": "Field Estimate Tool",
@@ -202,6 +231,16 @@
     "newEstimate": "New Estimate",
     "signOut": "Sign Out",
     "menuPrices": "Manage Prices"
+  },
+  "dryingChambers": {
+    "title": "Drying Chambers",
+    "addChamber": "Add Chamber",
+    "chamberName": "Chamber name",
+    "namePlaceholder": "e.g. Main Room, Crawl Space",
+    "deleteChamber": "Delete chamber",
+    "fallbackNote": "No drying chambers defined — using area dimensions for dehumidifier calculation",
+    "dehumidifiers": "dehumidifiers",
+    "totalCF": "Total: {{cf}} CF = {{count}} dehumidifiers (all chambers)"
   },
   "admin": {
     "pricesTitle": "Price Management",
