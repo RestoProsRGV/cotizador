@@ -124,7 +124,7 @@ export function Setup() {
           backgroundColor: "var(--color-background)",
         }}
       >
-        <AppHeader title={t("estimateNav.setup")} onBack={() => navigate(-1)} />
+        <AppHeader title={t("estimateNav.setup")} onBack={() => navigate("/estimates")} />
         <div
           style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}
         >
@@ -144,7 +144,7 @@ export function Setup() {
         backgroundColor: "var(--color-background)",
       }}
     >
-      <AppHeader title={t("estimateNav.setup")} onBack={() => navigate(-1)} />
+      <AppHeader title={t("estimateNav.setup")} onBack={() => navigate("/estimates")} />
 
       {/* Scrollable content — bottom padding clears the fixed EstimateNav */}
       <div style={{ flex: 1, paddingBottom: "56px" }}>

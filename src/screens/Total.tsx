@@ -83,7 +83,7 @@ export function Total() {
           backgroundColor: "var(--color-background)",
         }}
       >
-        <AppHeader title={t("total.title")} onBack={() => navigate(-1)} />
+        <AppHeader title={t("total.title")} onBack={() => navigate("/estimates")} />
         <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <p style={{ color: "var(--color-text-secondary)", fontSize: "14px" }}>
             {t("common.authRequired")}
@@ -103,7 +103,7 @@ export function Total() {
         backgroundColor: "var(--color-background)",
       }}
     >
-      <AppHeader title={t("total.title")} onBack={() => navigate(-1)} />
+      <AppHeader title={t("total.title")} onBack={() => navigate("/estimates")} />
 
       <main style={{ flex: 1, padding: "16px", display: "flex", flexDirection: "column", gap: "16px" }}>
         {loading ? (

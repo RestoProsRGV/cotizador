@@ -102,7 +102,7 @@ export function Present() {
       >
         <button
           type="button"
-          onClick={() => navigate(-1)}
+          onClick={() => navigate(`/estimates/${id}/total`)}
           aria-label={t("common.close")}
           style={{
             width: "48px",

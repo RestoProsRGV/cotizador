@@ -139,7 +139,7 @@ export function General() {
           backgroundColor: "var(--color-background)",
         }}
       >
-        <AppHeader title={t("general.title")} onBack={() => navigate(-1)} />
+        <AppHeader title={t("general.title")} onBack={() => navigate("/estimates")} />
         <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <p style={{ color: "var(--color-text-secondary)", fontSize: "14px" }}>
             {t("common.authRequired")}
@@ -159,7 +159,7 @@ export function General() {
         backgroundColor: "var(--color-background)",
       }}
     >
-      <AppHeader title={t("general.title")} onBack={() => navigate(-1)} />
+      <AppHeader title={t("general.title")} onBack={() => navigate("/estimates")} />
 
       <main style={{ flex: 1, paddingBottom: "16px" }}>
         {loading ? (

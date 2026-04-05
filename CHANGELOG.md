@@ -9,6 +9,37 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: April 5, 2026 — Back Navigation + FAB Fix
+
+### Decisions made
+- Back arrow in estimate header navigates explicitly to `/estimates` instead of `navigate(-1)` — reliable even when there is no browser history (fresh PWA launch)
+- Present screen close button navigates to `/estimates/:id/total` (explicit) instead of `navigate(-1)`
+
+### Files modified
+- `src/screens/Setup.tsx` — `onBack` → `navigate("/estimates")`
+- `src/screens/Areas.tsx` — `onBack` → `navigate("/estimates")`
+- `src/screens/General.tsx` — `onBack` → `navigate("/estimates")`
+- `src/screens/Total.tsx` — `onBack` → `navigate("/estimates")`
+- `src/screens/Present.tsx` — close button → `navigate(\`/estimates/${id}/total\`)`
+- `src/screens/__tests__/Setup.test.tsx` — 2 new tests: back arrow renders, tap navigates to /estimates
+
+### Commits pushed
+- (pending)
+
+### Open items
+- Write queuing (offline mutations) — deferred
+- Add Vercel env vars for Sentry
+- Run real job estimate end-to-end
+- Setup screen QA on device
+
+### Deploy verification
+- Commit: (pending)
+- Tests: 269 passing
+- /gstack:review: ✅ clean
+- Vercel: READY ✅
+
+---
+
 ## Session: April 3, 2026 — PWA Manifest
 
 ### Decisions made

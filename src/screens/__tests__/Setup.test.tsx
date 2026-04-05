@@ -56,7 +56,7 @@ vi.mock("@/context/AuthContext", () => ({
 }));
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-function renderSetup(estimateId = "est-1") {
+function renderSetup(estimateId = "est-1", withEstimatesList = false) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
@@ -65,6 +65,9 @@ function renderSetup(estimateId = "est-1") {
       <MemoryRouter initialEntries={[`/estimates/${estimateId}/setup`]}>
         <Routes>
           <Route path="/estimates/:id/setup" element={<Setup />} />
+          {withEstimatesList && (
+            <Route path="/estimates" element={<div>Estimates List</div>} />
+          )}
         </Routes>
       </MemoryRouter>
     </QueryClientProvider>,
@@ -167,5 +170,16 @@ describe("Setup screen", () => {
       { timeout: 3000 },
     );
     expect(screen.queryByText("Emergency Call")).not.toBeInTheDocument();
+  });
+
+  it("renders a back arrow button in the header", () => {
+    renderSetup();
+    expect(screen.getByRole("button", { name: /go back/i })).toBeInTheDocument();
+  });
+
+  it("tapping back arrow navigates to /estimates", () => {
+    renderSetup("est-1", true);
+    fireEvent.click(screen.getByRole("button", { name: /go back/i }));
+    expect(screen.getByText("Estimates List")).toBeInTheDocument();
   });
 });

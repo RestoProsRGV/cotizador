@@ -327,7 +327,7 @@ export function Areas() {
   if (authError) {
     return (
       <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "var(--color-background)" }}>
-        <AppHeader title={t("areas.title")} onBack={() => navigate(-1)} />
+        <AppHeader title={t("areas.title")} onBack={() => navigate("/estimates")} />
         <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "16px", textAlign: "center" }}>
           <p style={{ color: "var(--color-text-secondary)", fontSize: "14px" }}>{t("common.authRequired")}</p>
         </div>
@@ -338,7 +338,7 @@ export function Areas() {
 
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", backgroundColor: "var(--color-background)" }}>
-      <AppHeader title={t("areas.title")} onBack={() => navigate(-1)} />
+      <AppHeader title={t("areas.title")} onBack={() => navigate("/estimates")} />
 
       <main style={{ flex: 1, padding: "16px", paddingBottom: "16px" }}>
         {loading ? (
