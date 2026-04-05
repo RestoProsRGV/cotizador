@@ -40,6 +40,14 @@ PR descriptions aren't read by Claude Code in future sessions.
 context from later sections in long conversations. Shorter focused files
 are read more reliably.
 
+### Sentry — prod only
+**Decision:** Sentry initializes only when `import.meta.env.PROD` is true.
+tracesSampleRate: 0.2 (20% of transactions). Auth errors are filtered out
+(expected, not bugs). One ErrorBoundary at root, not per-component.
+**Why:** Dev and test environments generate noise that pollutes error dashboards.
+Auth errors are normal logout/session-expiry behavior, not application bugs.
+One root boundary catches all unhandled errors without wrapping every component.
+
 ---
 
 ## Architecture Decisions
