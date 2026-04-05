@@ -24,7 +24,7 @@ Every development session adds an entry. Format:
 - `src/screens/__tests__/Setup.test.tsx` — 2 new tests: back arrow renders, tap navigates to /estimates
 
 ### Commits pushed
-- (pending)
+- `b2c196c` fix: back arrow in estimate header navigates to /estimates explicitly
 
 ### Open items
 - Write queuing (offline mutations) — deferred
@@ -33,7 +33,7 @@ Every development session adds an entry. Format:
 - Setup screen QA on device
 
 ### Deploy verification
-- Commit: (pending)
+- Commit: `b2c196c`
 - Tests: 269 passing
 - /gstack:review: ✅ clean
 - Vercel: READY ✅
