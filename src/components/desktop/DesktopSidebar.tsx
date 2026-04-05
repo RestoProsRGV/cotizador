@@ -1,10 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { LayoutList, Settings } from "lucide-react";
+import { LayoutList, Settings, Zap } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 
 const NAV_ITEMS = [
   { icon: LayoutList, href: "/desktop/estimates", label: "Estimates" },
   { icon: Settings, href: "/desktop/admin/prices", label: "Admin" },
+  { icon: Zap, href: "/desktop/admin/suggestion-rules", label: "Suggestion Rules" },
 ];
 
 export function DesktopSidebar() {

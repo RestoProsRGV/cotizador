@@ -211,6 +211,49 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: April 5, 2026 — Suggestion Rules Manager
+
+### Decisions made
+- DB-driven admin UI + hardcoded fallback coexist: field app keeps reading demoItems.ts,
+  admin UI reads/writes suggestion_rules table — no field app risk
+- Item catalog for dropdowns: ALL_DEMO_ITEMS + ALL_PREP_ITEMS combined (~39 items),
+  sorted alphabetically by name
+- Auto-save on every change (same pattern as Setup screen): selects/toggles immediate,
+  number inputs on blur
+- Duplicate prevention: suggested_item_code options disabled if already in list for that trigger
+- Delete last suggestion for a trigger → trigger disappears from left panel (correct)
+- Spec doc at docs/SPEC-suggestion-rules.md
+
+### Files created
+- `docs/SPEC-suggestion-rules.md` — spec written before implementation
+- `src/pages/desktop/DesktopSuggestionRules.tsx` — two-panel admin page
+- `src/pages/desktop/__tests__/DesktopSuggestionRules.test.tsx` — 7 tests
+
+### Files modified
+- `src/components/desktop/DesktopSidebar.tsx` — Zap icon added for Suggestion Rules
+- `src/App.tsx` — `/desktop/admin/suggestion-rules` route (requireOwner)
+- `DECISIONS.md` — DB-driven + hardcoded fallback decision
+
+### Commits pushed
+- (pending)
+
+### Open items
+- Apply migration SQL to Supabase if suggestion_rules table doesn't exist yet
+  (use Supabase MCP in claude.ai to check)
+- Future: migrate field app (Demo.tsx, Prep.tsx) to read from DB at runtime
+- Add Vercel env vars for Sentry
+- Run real job estimate end-to-end
+- Setup screen QA on device
+- Service worker caching strategy (deferred)
+
+### Deploy verification
+- Commit: (pending)
+- Tests: 263 passing
+- /gstack:review: ✅ clean
+- Vercel: READY ✅
+
+---
+
 ## Session: April 5, 2026 — Desktop UI QA Fixes
 
 ### Decisions made

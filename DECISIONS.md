@@ -48,6 +48,18 @@ tracesSampleRate: 0.2 (20% of transactions). Auth errors are filtered out
 Auth errors are normal logout/session-expiry behavior, not application bugs.
 One root boundary catches all unhandled errors without wrapping every component.
 
+### Suggestion Rules — DB-driven with hardcoded fallback
+**Decision:** Admin UI reads/writes the `suggestion_rules` table in Supabase.
+The field app (Demo.tsx, Prep.tsx) continues to use hardcoded rules from
+demoItems.ts and prepItems.ts. The two systems coexist until a future session
+migrates the field app to read from DB at runtime.
+**Why:** Adding a Supabase fetch to Demo.tsx would make field screens async-
+dependent, risking latency or failure on-site. The admin UI is desktop-only
+and can tolerate the network round-trip. This lets the owner configure rules
+without a code deployment while keeping the field app reliable.
+**Alternative considered:** Replace hardcoded with DB at runtime — rejected
+because field screens need to work even with spotty connectivity.
+
 ---
 
 ## Architecture Decisions

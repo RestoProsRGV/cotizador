@@ -14,6 +14,7 @@ import { AdminPrices } from "@/screens/admin/AdminPrices";
 import { DesktopEstimatesList } from "@/pages/desktop/DesktopEstimatesList";
 import { DesktopEstimateDetail } from "@/pages/desktop/DesktopEstimateDetail";
 import { DesktopAdminPrices } from "@/pages/desktop/DesktopAdminPrices";
+import { DesktopSuggestionRules } from "@/pages/desktop/DesktopSuggestionRules";
 
 // Route architecture:
 //   /                → RootRedirect: desktop browser → /desktop/estimates, mobile/PWA → /estimates
@@ -147,6 +148,14 @@ export function App() {
         element={
           <RequireAuth requireOwner>
             <DesktopAdminPrices />
+          </RequireAuth>
+        }
+      />
+      <Route
+        path="/desktop/admin/suggestion-rules"
+        element={
+          <RequireAuth requireOwner>
+            <DesktopSuggestionRules />
           </RequireAuth>
         }
       />
