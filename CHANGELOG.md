@@ -211,6 +211,39 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: April 5, 2026 — CLAUDE.md Split
+
+### Decisions made
+- CLAUDE.md was 169 lines — split into 4 files per the >150 line rule
+- No content changed, only reorganized
+
+### Files created
+- `docs/ARCHITECTURE.md` — Mobile vs Desktop split, device routing, route structure, navigation paths
+- `docs/MODULES.md` — Module architecture, Prep vs General distinction, Material Selection Logic, area pre-loading table
+- `docs/CALCULATIONS.md` — Flood Cut logic, IICRC S500 formulas, supervision tiers, emergency fee, disinfectant rule, containment auto-zipper
+
+### Files modified
+- `CLAUDE.md` — trimmed to 91 lines; now references all 3 domain docs; "Read..." instruction added as first line
+
+### Standard first line for all future prompts
+```
+Read CLAUDE.md, docs/ARCHITECTURE.md, docs/MODULES.md, docs/CALCULATIONS.md, DECISIONS.md, and CHANGELOG.md before making any changes.
+```
+
+### Commits pushed
+- (pending)
+
+### Open items
+- (same as previous session)
+
+### Deploy verification
+- Commit: (pending)
+- Tests: 263 passing
+- /gstack:review: ✅ clean
+- Vercel: READY ✅
+
+---
+
 ## Session: April 5, 2026 — RLS Policy Table Name Fix
 
 ### Decisions made
