@@ -211,6 +211,35 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: April 5, 2026 — Sentry Error Monitoring
+
+### Decisions made
+- Sentry initializes only in PROD (`import.meta.env.PROD`) — no dev/test noise
+- tracesSampleRate: 0.2 (20% of transactions)
+- Auth errors filtered out in `beforeSend` — expected behavior, not bugs
+- One `Sentry.ErrorBoundary` at root — no per-component boundaries
+- `.env.example` force-committed (`.env*` glob in `.gitignore` would otherwise exclude it)
+- Sentry source maps upload via `sentryVitePlugin` on production builds only
+
+### Commits pushed
+- `c938f66` feat: Sentry error monitoring — prod-only, ErrorBoundary at root
+
+### Open items
+- Add Vercel environment variables: VITE_SENTRY_DSN, VITE_SENTRY_ORG, VITE_SENTRY_PROJECT, SENTRY_AUTH_TOKEN
+- Create Sentry project and copy DSN
+- Run a real job estimate end-to-end to validate pricing and formulas
+- Setup screen QA (never tested on device)
+- Suggestion Rules Manager — Admin desktop UI
+- Service worker caching strategy (deferred)
+
+### Deploy verification
+- Commit: `c938f66`
+- Tests: 256 passing
+- /gstack:review: ✅ clean
+- Vercel: READY ✅
+
+---
+
 ## Session: April 3, 2026 — Workflow Upgrades
 
 ### Decisions made
