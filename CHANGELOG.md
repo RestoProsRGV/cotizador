@@ -24,7 +24,7 @@ Every development session adds an entry. Format:
 - `DECISIONS.md` — new "Tool & Integration Decisions" section
 
 ### Commits pushed
-- (pending)
+- `161cb64` chore: install napkin, caveman, skill-forge skills
 
 ### Open items
 - Run `/caveman:compress CLAUDE.md` to compress for faster token reading
@@ -35,10 +35,10 @@ Every development session adds an entry. Format:
 - Run a real job estimate end-to-end
 
 ### Deploy verification
-- Commit: (pending)
+- Commit: `161cb64`
 - Tests: N/A (no source changes)
 - /gstack:review: N/A (no source changes)
-- Vercel: N/A
+- Vercel: N/A (no source changes)
 
 ---
 
