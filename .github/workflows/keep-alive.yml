@@ -1,0 +1,14 @@
+name: Keep Vercel Active
+on:
+  schedule:
+    - cron: '0 9 1 * *'  # First day of each month, 9am UTC
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          git config user.email "armando@restoprosrgv.com"
+          git config user.name "Keep Alive Bot"
+          git commit --allow-empty -m "chore: monthly keep-alive"
+          git push
