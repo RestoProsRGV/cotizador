@@ -9,6 +9,39 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: May 2, 2026 — Skills Installation
+
+### Decisions made
+- Napkin, Caveman, Skill Forge installed into `.claude/skills/`
+- Skill `.git` dirs added to `.gitignore` — skill files tracked, not their git history
+- All three skills documented in `DECISIONS.md` under "Tool & Integration Decisions"
+
+### Files created/modified
+- `.claude/skills/napkin/` — persistent mistake memory per repo
+- `.claude/skills/caveman/` — token optimization (~65% reduction)
+- `.claude/skills/skill-forge/` — skill creator and auditor
+- `.gitignore` — added `.claude/skills/{napkin,caveman,skill-forge}/.git`
+- `DECISIONS.md` — new "Tool & Integration Decisions" section
+
+### Commits pushed
+- (pending)
+
+### Open items
+- Run `/caveman:compress CLAUDE.md` to compress for faster token reading
+- Verify `.claude/napkin.md` created after first Napkin session
+- Build cotizador-specific skills with Skill Forge (cotizador-patterns, cotizador-db, cotizador-ui)
+- Run migrations `20260405000002` and `20260405000003` manually in Supabase SQL Editor
+- Add Vercel env vars for Sentry
+- Run a real job estimate end-to-end
+
+### Deploy verification
+- Commit: (pending)
+- Tests: N/A (no source changes)
+- /gstack:review: N/A (no source changes)
+- Vercel: N/A
+
+---
+
 ## Session: April 5, 2026 — Back Navigation + FAB Fix
 
 ### Decisions made

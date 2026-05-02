@@ -53,6 +53,20 @@ One root boundary catches all unhandled errors without wrapping every component.
 **Why:** Field techs may work in homes with bad WiFi or no signal. Static assets are safe to serve from cache (only change on deploy). Supabase data must be fresh when possible but should fall back gracefully when offline. Write queuing adds significant complexity (conflict resolution, sync strategy) and is deferred to a dedicated session.
 **Alternative considered:** Full offline-first with write queue — rejected for this session due to complexity; deferred.
 
+## Tool & Integration Decisions
+
+### Skills installed
+- **Napkin** (`blader/napkin`): Persistent memory of mistakes per repo.
+  Reads/writes `.claude/napkin.md` every session. Compounds over time —
+  by session 3-5 Claude stops repeating corrected mistakes.
+- **Caveman** (`JuliusBrussee/caveman`): Token optimization. ~65% output
+  token reduction. Use `/caveman` to activate, `/caveman:compress` to
+  compress instruction files. Never use for customer-facing text generation.
+- **Skill Forge** (`AgriciDaniel/skill-forge`): Creates and audits custom
+  skills. Use to build cotizador-patterns, cotizador-db, cotizador-ui skills.
+
+---
+
 ### Suggestion Rules — DB-driven with hardcoded fallback
 **Decision:** Admin UI reads/writes the `suggestion_rules` table in Supabase.
 The field app (Demo.tsx, Prep.tsx) continues to use hardcoded rules from
