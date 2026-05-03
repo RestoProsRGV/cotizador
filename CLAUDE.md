@@ -1,27 +1,26 @@
-Read CLAUDE.md, docs/ARCHITECTURE.md, docs/MODULES.md, docs/CALCULATIONS.md, DECISIONS.md, and CHANGELOG.md before making any changes.
+Read CLAUDE.md, docs/ARCHITECTURE.md, docs/MODULES.md, docs/CALCULATIONS.md, DECISIONS.md, CHANGELOG.md before change.
 
 ## How we work
 
 ### Roles
-- **claude.ai** — analysis, architecture decisions, UX design, prompt generation
-- **Claude Code** — implementation only. Never make architectural decisions
-  without a prompt that came from a claude.ai session.
+- **claude.ai** — analysis, architecture, UX, prompt gen
+- **Claude Code** — implement only. No architecture decision without prompt from claude.ai session.
 
 ### Pre-push checklist (every push to main)
-1. `/gstack:review` — fix all issues before pushing
-2. `npm test` — all tests must pass
+1. `/gstack:review` — fix all before push
+2. `npm test` — all pass
 3. Push
-4. Verify Vercel deploy is READY
+4. Verify Vercel deploy READY
 5. Update CHANGELOG.md with deploy verification
 
 ### When to write a spec first
-Before implementing any of these, create a spec doc in `docs/SPEC-[feature].md`:
-- New modules or major features
-- Changes to pricing logic or IICRC formulas
-- Multi-step flows (approvals, versioning, PDF generation)
-- Anything that touches more than 3 files
+Before implement any: create spec in `docs/SPEC-[feature].md`:
+- New modules or big features
+- Pricing logic or IICRC formula changes
+- Multi-step flows (approvals, versioning, PDF)
+- Touch more than 3 files
 
-Spec doc template:
+Spec template:
 ```
 # Spec: [Feature Name]
 ## Problem
@@ -32,7 +31,7 @@ Spec doc template:
 ```
 
 ### When CLAUDE.md gets too long
-When CLAUDE.md exceeds 150 lines, split further into additional domain files under `docs/`.
+CLAUDE.md exceed 150 lines → split into domain files under `docs/`.
 
 ---
 
@@ -42,19 +41,19 @@ When CLAUDE.md exceeds 150 lines, split further into additional domain files und
 
 ## How to use this project
 
-- `CLAUDE.md` — general rules + how we work
+- `CLAUDE.md` — rules + how we work
 - `docs/ARCHITECTURE.md` — routes, Mobile vs Desktop, device routing, navigation
-- `docs/MODULES.md` — per-module business logic, materials, area pre-loading
-- `docs/CALCULATIONS.md` — Flood Cut logic, IICRC formulas, pricing rules
-- `DECISIONS.md` — why every decision was made
-- `CHANGELOG.md` — what was built in each session and what is open
+- `docs/MODULES.md` — module logic, materials, area pre-loading
+- `docs/CALCULATIONS.md` — Flood Cut, IICRC formulas, pricing rules
+- `DECISIONS.md` — why every decision made
+- `CHANGELOG.md` — what built each session, what open
 
-**Rule:** At the end of every session, update `CHANGELOG.md` with:
-1. New decisions made
+**Rule:** End of every session, update `CHANGELOG.md`:
+1. New decisions
 2. Commits pushed
-3. New open items discovered
+3. New open items
 
-Never make a change that contradicts a decision in `DECISIONS.md` without first flagging it to the user.
+Never change anything that contradicts `DECISIONS.md` without flagging user first.
 
 ## Stack
 React 18 + Vite + TypeScript · Supabase (Postgres + Auth + RLS) · Vercel · Tailwind v4 · React Query · React Router v6 · Vitest + Testing Library · i18n via react-i18next
@@ -63,29 +62,25 @@ React 18 + Vite + TypeScript · Supabase (Postgres + Auth + RLS) · Vercel · Ta
 User profiles table: `users` (NOT `profiles`). Always use `users` in RLS policies and queries.
 
 ## Sentry
-Sentry is prod-only — never mock or initialize in tests. `initSentry()` is a no-op unless `import.meta.env.PROD` is true.
+Sentry prod-only — no mock or init in tests. `initSentry()` no-op unless `import.meta.env.PROD` true.
 
 ## Supabase MCP in claude.ai
-Supabase MCP is connected to claude.ai (not just Claude Code).
-Use it to audit production data directly — verify line_items saved correctly,
-check that totals match UI, validate pricing calculations — without asking
-Claude Code to write query scripts.
+Supabase MCP connected to claude.ai (not just Claude Code). Use to audit prod data — verify line_items saved, totals match UI, validate pricing — no need ask Claude Code write query scripts.
 
 ## Skill routing
 
-When the user's request matches an available skill, ALWAYS invoke it using the Skill
-tool as your FIRST action. Do NOT answer directly, do NOT use other tools first.
+User request match skill → ALWAYS invoke with Skill tool FIRST. No direct answer. No other tools first.
 
-Key routing rules:
-- Product ideas, "is this worth building", brainstorming → invoke office-hours
-- Bugs, errors, "why is this broken", 500 errors → invoke investigate
-- Ship, deploy, push, create PR → invoke ship
-- QA, test the site, find bugs → invoke qa
-- Code review, check my diff → invoke review
-- Update docs after shipping → invoke document-release
+Key routing:
+- Product ideas, brainstorm → invoke office-hours
+- Bugs, errors, 500 → invoke investigate
+- Ship, deploy, push, PR → invoke ship
+- QA, find bugs → invoke qa
+- Code review, diff → invoke review
+- Update docs after ship → invoke document-release
 - Weekly retro → invoke retro
 - Design system, brand → invoke design-consultation
-- Visual audit, design polish → invoke design-review
+- Visual audit, polish → invoke design-review
 - Architecture review → invoke plan-eng-review
-- Save progress, checkpoint, resume → invoke checkpoint
-- Code quality, health check → invoke health
+- Save progress, checkpoint → invoke checkpoint
+- Code quality, health → invoke health
