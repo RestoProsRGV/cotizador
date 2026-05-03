@@ -9,6 +9,41 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: May 3, 2026 — Custom Skills (patterns, db, ui)
+
+### Decisions made
+- Three Tier 1 skills created and validated at 100/100 by Skill Forge
+- `cotizador-patterns`: common mistakes — RLS table naming, tenant_id, PWA nav, CalcInput, Sentry, DDL, pre-push
+- `cotizador-db`: full schema reference — 9 tables, RLS patterns, public share policies, DDL rule
+- `cotizador-ui`: design system — brand colors, mobile/desktop layout, i18n, CalcInput, device routing
+
+### Files created
+- `.claude/skills/cotizador-patterns/SKILL.md`
+- `.claude/skills/cotizador-db/SKILL.md`
+- `.claude/skills/cotizador-ui/SKILL.md`
+
+### Skill Forge audit results
+| Skill | Score | Issues |
+|-------|-------|--------|
+| cotizador-patterns | 100/100 | none |
+| cotizador-db | 100/100 | none |
+| cotizador-ui | 100/100 | none |
+
+### Commits pushed
+- (pending)
+
+### Open items
+- Run migrations `20260405000002` and `20260405000003` manually in Supabase SQL Editor
+- Add Vercel env vars for Sentry
+- Run a real job estimate end-to-end
+
+### Deploy verification
+- Tests: N/A (no source changes)
+- /gstack:review: N/A (no source changes)
+- Vercel: N/A (no source changes)
+
+---
+
 ## Session: May 2, 2026 — RLS Security Audit
 
 ### Decisions made
