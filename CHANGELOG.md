@@ -30,7 +30,7 @@ Every development session adds an entry. Format:
 | cotizador-ui | 100/100 | none |
 
 ### Commits pushed
-- (pending)
+- `e33ac09` chore: add cotizador custom skills (patterns, db, ui)
 
 ### Open items
 - Run migrations `20260405000002` and `20260405000003` manually in Supabase SQL Editor
@@ -38,6 +38,7 @@ Every development session adds an entry. Format:
 - Run a real job estimate end-to-end
 
 ### Deploy verification
+- Commit: `e33ac09`
 - Tests: N/A (no source changes)
 - /gstack:review: N/A (no source changes)
 - Vercel: N/A (no source changes)
