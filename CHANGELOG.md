@@ -9,6 +9,41 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: May 2, 2026 — RLS Security Audit
+
+### Decisions made
+- 9 tables audited — 0 gaps found, 0 fixes needed
+- All tables have RLS enabled with tenant-scoped policies
+- INSERT policies carry proper `with_check` clauses (not just `qual = null`)
+- No `service_role_key` exposure anywhere in `src/`
+- Public share SELECT policies on `estimates` / `line_items` confirmed intentional
+- Audit decision recorded in `DECISIONS.md` under "Tool & Integration Decisions"
+
+### Audit findings
+| Check | Result |
+|---|---|
+| Policies with `qual = true` (no tenant filter) | ✅ 0 rows |
+| Tables with RLS disabled | ✅ 0 rows |
+| Tables with RLS enabled but no policies | ✅ 0 rows |
+| INSERT `with_check` clauses properly scoped | ✅ confirmed |
+| `service_role_key` in `src/` | ✅ not found |
+
+### Commits pushed
+- (no code changes — audit only, DECISIONS.md + CHANGELOG.md updated)
+
+### Open items
+- Run migrations `20260405000002` and `20260405000003` manually in Supabase SQL Editor
+- Add Vercel env vars for Sentry
+- Run a real job estimate end-to-end
+- Next RLS audit before multi-tenant launch
+
+### Deploy verification
+- Tests: N/A (no source changes)
+- /gstack:review: N/A (no source changes)
+- Vercel: N/A (no source changes)
+
+---
+
 ## Session: May 2, 2026 — Skills Installation
 
 ### Decisions made

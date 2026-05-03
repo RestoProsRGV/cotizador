@@ -55,6 +55,20 @@ One root boundary catches all unhandled errors without wrapping every component.
 
 ## Tool & Integration Decisions
 
+### RLS Security Audit — May 2, 2026
+Audit results: 9 tables audited, 0 gaps found, 0 fixes needed.
+- **Query 1** (policies with `qual = true`): 0 rows ✅ — no unscoped policies
+- **Query 2** (RLS disabled): 0 rows ✅ — all tables have RLS enabled
+- **Query 3** (RLS enabled, no policies): 0 rows ✅ — every table has at least one policy
+- **INSERT with_check**: `estimates` scoped to `current_tenant_id() + auth.uid()`; `materials` scoped to tenant + owner role ✅
+- **service_role_key**: not present anywhere in `src/` ✅
+- Tables audited: `areas`, `drying_chambers`, `estimates`, `line_items`, `materials`, `price_items`, `suggestion_rules`, `tenants`, `users`
+- All tables tenant-isolated via `current_tenant_id()` or `users.tenant_id` subquery
+- Public share SELECT policies on `estimates` and `line_items` are intentional (present-to-client feature)
+Next audit: before multi-tenant launch.
+
+---
+
 ### Skills installed
 - **Napkin** (`blader/napkin`): Persistent memory of mistakes per repo.
   Reads/writes `.claude/napkin.md` every session. Compounds over time —
