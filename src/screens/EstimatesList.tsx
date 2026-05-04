@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
-import { ChevronRight, Search, LogOut, Settings } from "lucide-react";
+import { ChevronRight, Search, LogOut, Settings, Languages } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { FAB } from "@/components/layout/FAB";
+import i18n from "@/lib/i18n";
 
 interface Estimate {
   id: string;
@@ -45,8 +46,14 @@ function statusChip(status: string): { bg: string; color: string } {
   }
 }
 
+function toggleLanguage() {
+  const next = i18n.language === "en" ? "es" : "en";
+  i18n.changeLanguage(next);
+  localStorage.setItem("lang", next);
+}
+
 export function EstimatesList() {
-  const { t } = useTranslation();
+  const { t, i18n: i18nInstance } = useTranslation();
   const navigate = useNavigate();
   const { signOut, profile } = useAuth();
   const [search, setSearch] = useState("");
@@ -127,6 +134,15 @@ export function EstimatesList() {
                   {t("estimatesList.menuPrices")}
                 </button>
               )}
+              <button
+                type="button"
+                onClick={() => { toggleLanguage(); setMenuOpen(false); }}
+                className="flex w-full items-center gap-3 px-4 py-3 text-sm text-left"
+                style={{ color: "var(--color-text-primary)", border: "none", background: "none", cursor: "pointer" }}
+              >
+                <Languages size={16} aria-hidden />
+                {i18nInstance.language === "en" ? "Cambiar a Español" : "Switch to English"}
+              </button>
               <button
                 type="button"
                 onClick={async () => { setMenuOpen(false); await signOut(); navigate("/login"); }}
