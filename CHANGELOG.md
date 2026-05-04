@@ -726,6 +726,44 @@ Read CLAUDE.md, docs/ARCHITECTURE.md, docs/MODULES.md, docs/CALCULATIONS.md, DEC
 
 ---
 
+## Session: May 4, 2026 — Spanish i18n
+
+### Decisions made
+- `es.json` created with all 90+ keys translated using professional restoration industry Spanish
+- Industry terminology: Cotización/Estimado, Daño por agua, Deshumidificador, Movedor de aire, Contención, etc.
+- Proper nouns kept as-is: RestoPros, Xactimate, Encircle, IICRC, Cat 1/2/3, SF, LF, EA
+- Status terms: Draft → Borrador, Approved → Aprobado, Invoiced → Facturado
+- Language preference stored in `localStorage` under key `"lang"`, restored on next load
+- Language toggle button label stays in the *opposite* language (standard switcher UX — "Cambiar a Español" when in English, "Switch to English" when in Spanish)
+- `i18n.ts` updated to load both locales and read initial `lng` from localStorage
+
+### Files created
+- `src/locales/es.json` — complete Spanish translation (90+ keys)
+- `src/locales/__tests__/i18n.test.ts` — 3 key-parity tests
+
+### Files modified
+- `src/lib/i18n.ts` — load es.json, init from localStorage
+- `src/locales/en.json` — add `estimatesList.menuLanguage` key
+- `src/screens/EstimatesList.tsx` — language toggle in header settings menu
+
+### Commits pushed
+- `ae3cf86` feat: Spanish i18n — es.json + language switcher in header menu
+
+### Open items
+- PROMPT 4: Playwright E2E tests
+- PROMPT 5: Bundle analysis + lazy loading
+- Run migrations `20260405000002` and `20260405000003` in Supabase SQL Editor
+- Add Vercel env vars for Sentry
+- Run a real job estimate end-to-end
+
+### Deploy verification
+- Commit: `ae3cf86`
+- Tests: 290 passing (3 new i18n parity tests; same 2 pre-existing env-var failures)
+- TypeScript: ✅ clean
+- Vercel: READY ✅
+
+---
+
 ## Template for future sessions
 
 ## Session: [DATE] — [Topic]
