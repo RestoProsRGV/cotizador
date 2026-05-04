@@ -709,6 +709,23 @@ Read CLAUDE.md, docs/ARCHITECTURE.md, docs/MODULES.md, docs/CALCULATIONS.md, DEC
 
 ---
 
+## Session: May 4, 2026 — Keep-Alive Workflow Update
+
+### Decisions made
+- Updated `.github/workflows/keep-alive.yml` to match spec: `actions/checkout@v4`, `workflow_dispatch` trigger, `[skip ci]` in commit message, named steps, `RestoPros Bot` identity
+
+### Files modified
+- `.github/workflows/keep-alive.yml` — v3→v4, add workflow_dispatch, [skip ci] tag, named steps
+
+### Commits pushed
+- `51fce38` chore: add monthly Vercel keep-alive GitHub Action
+
+### Deploy verification
+- Tests: N/A (no source changes)
+- Vercel: N/A (workflow file only)
+
+---
+
 ## Template for future sessions
 
 ## Session: [DATE] — [Topic]
