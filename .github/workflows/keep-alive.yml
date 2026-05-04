@@ -1,14 +1,24 @@
 name: Keep Vercel Active
+
 on:
   schedule:
-    - cron: '0 9 1 * *'  # First day of each month, 9am UTC
+    - cron: '0 9 1 * *'  # 1st of every month at 9am UTC
+  workflow_dispatch:      # Allow manual trigger from GitHub UI
+
 jobs:
-  ping:
+  keep-alive:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - run: |
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
           git config user.email "armando@restoprosrgv.com"
-          git config user.name "Keep Alive Bot"
-          git commit --allow-empty -m "chore: monthly keep-alive"
+          git config user.name "RestoPros Bot"
+
+      - name: Create keep-alive commit
+        run: |
+          git commit --allow-empty -m "chore: monthly keep-alive [skip ci]"
           git push
