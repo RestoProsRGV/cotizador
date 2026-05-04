@@ -670,6 +670,45 @@ Read CLAUDE.md, docs/ARCHITECTURE.md, docs/MODULES.md, docs/CALCULATIONS.md, DEC
 
 ---
 
+## Session: May 4, 2026 — Hybrid Pricing Architecture
+
+### Decisions made
+- `usePriceMap()` hook: synchronous init from `HARDCODED_PRICES`, async DB fetch overrides on success. No flicker — hardcoded values always present.
+- All module files (`DemoTab`, `PrepTab`, `CleaningTab`, `EquipmentTab`, `General`) now use `prices[code] ?? 0` instead of synchronous `getPrice()`.
+- `price_items` column is `xactimate_code` — DB lookup returns empty until prices imported + code mapping added; hardcoded fallback is expected default.
+- AdminPrices shows yellow fallback banner when `price_items` table is empty.
+- `@/constants/prices.ts` deprecated — kept for legacy references, no new usages.
+
+### Files created
+- `src/constants/hardcodedPrices.ts` — typed `PriceItem` interface + 60+ codes
+- `src/services/pricingService.ts` — `usePriceMap()` hook + `getPricingStatus()`
+- `src/services/__tests__/pricingService.test.ts` — 9 tests
+
+### Files modified
+- `src/components/modules/DemoTab.tsx`, `PrepTab.tsx`, `CleaningTab.tsx`, `EquipmentTab.tsx`
+- `src/screens/General.tsx`, `src/screens/admin/AdminPrices.tsx`
+- `src/locales/en.json` — `admin.hardcodedPricesBanner` key
+- `DECISIONS.md` — hybrid pricing decisions recorded
+
+### Commits pushed
+- `2c9e356` feat: hybrid pricing — DB-first with hardcoded fallback via usePriceMap()
+
+### Open items
+- PROMPT 3: Spanish i18n (es.json + language switcher)
+- PROMPT 4: Playwright E2E tests
+- PROMPT 5: Bundle analysis + lazy loading
+- Run migrations `20260405000002` and `20260405000003` in Supabase SQL Editor
+- Add Vercel env vars for Sentry
+- Run a real job estimate end-to-end
+
+### Deploy verification
+- Commit: `2c9e356`
+- Tests: 296 passing (9 new pricingService tests; 2 pre-existing env-var failures excluded)
+- TypeScript: ✅ clean
+- Vercel: READY ✅
+
+---
+
 ## Template for future sessions
 
 ## Session: [DATE] — [Topic]
