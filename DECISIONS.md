@@ -8,6 +8,15 @@ Every significant decision is recorded here with:
 
 ---
 
+## Testing Decisions
+
+### Playwright E2E tests — separate from Vitest, skipped without credentials
+**Decision:** E2E tests live in `e2e/` and run with `npm run e2e`. Two Playwright projects: Mobile Chrome (Pixel 5) and Desktop Chrome. All tests skip gracefully when `VITE_E2E_EMAIL` / `VITE_E2E_PASSWORD` are not set, so CI without a test account never blocks. Tests cover auth, estimates list, full estimate flow, and desktop UI.
+**Why:** Vitest + jsdom tests verify component logic but cannot catch routing bugs, Supabase auth flows, or multi-screen interactions. Playwright tests the real app against a real browser and real Supabase backend.
+**Alternative considered:** Mock Supabase in Playwright — rejected because it removes the value of E2E testing; the point is to catch integration failures.
+
+---
+
 ## Pricing Decisions
 
 ### Hybrid pricing: DB-first with hardcoded fallback

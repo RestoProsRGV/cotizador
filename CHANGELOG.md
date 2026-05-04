@@ -9,6 +9,44 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: May 4, 2026 — Playwright E2E Tests
+
+### Decisions made
+- Playwright E2E suite added: `e2e/` directory, two projects (Mobile Chrome / Desktop Chrome)
+- All tests skip gracefully when `VITE_E2E_EMAIL` / `VITE_E2E_PASSWORD` not set — CI without test credentials never blocks
+- `playwright.config.ts` at project root: `webServer` auto-starts `npm run dev`, `reuseExistingServer` in dev
+- `e2e/test-results/` and `e2e/playwright-report/` added to `.gitignore`
+
+### Files created
+- `playwright.config.ts` — Playwright config (Pixel 5 + Desktop Chrome projects)
+- `e2e/auth.spec.ts` — login valid/invalid, logout
+- `e2e/estimates.spec.ts` — list load, search, FAB, new estimate validation
+- `e2e/estimate-flow.spec.ts` — full flow: create → areas → general → total → present buttons
+- `e2e/desktop.spec.ts` — table, search, sidebar, row click, 4 tabs, New Estimate toast
+
+### Files modified
+- `package.json` — added `e2e`, `e2e:ui`, `e2e:report` scripts; `@playwright/test ^1.59.1`
+- `.gitignore` — added `e2e/test-results/` and `e2e/playwright-report/`
+- `.env.example` — added `VITE_E2E_EMAIL` and `VITE_E2E_PASSWORD`
+- `DECISIONS.md` — Playwright E2E decision recorded
+
+### Commits pushed
+- (pending)
+
+### Open items
+- Set `VITE_E2E_EMAIL` and `VITE_E2E_PASSWORD` in local `.env` to run E2E against real Supabase
+- PROMPT 5: Bundle analysis + lazy loading
+- Run migrations `20260405000002` and `20260405000003` in Supabase SQL Editor
+- Add Vercel env vars for Sentry
+- Run a real job estimate end-to-end
+
+### Deploy verification
+- Tests: 290 passing (2 pre-existing env-var failures excluded)
+- TypeScript: ✅ clean
+- Vercel: pending
+
+---
+
 ## Session: May 3, 2026 — Custom Skills (patterns, db, ui)
 
 ### Decisions made

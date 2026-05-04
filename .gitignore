@@ -45,7 +45,9 @@ next-env.d.ts
 .claude/settings.local.json
 /dist
 
-# Claude Code skills (external repos — keep skill files, not their .git history)
-.claude/skills/napkin/.git
-.claude/skills/caveman/.git
-.claude/skills/skill-forge/.git
+# Claude Code skills — track files but exclude any nested .git dirs if re-cloned
+.claude/skills/*/.git
+
+# Playwright
+e2e/test-results/
+e2e/playwright-report/
