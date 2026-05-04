@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/context/AuthContext";
 import { parseXactimatePriceList, type ParsedPriceItem } from "@/lib/xactimateParser";
 import { AppHeader } from "@/components/layout/AppHeader";
+import { HARDCODED_PRICES } from "@/constants/hardcodedPrices";
 
 interface PriceItem {
   id: string;
@@ -373,6 +374,16 @@ export function AdminPrices() {
           {t("admin.materialsTab")}
         </button>
       </div>
+
+      {/* Hardcoded prices fallback banner */}
+      {existing.length === 0 && (
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", padding: "10px 16px", backgroundColor: "#fff8e1", borderBottom: "1px solid #ffe082" }}>
+          <AlertCircle size={16} style={{ color: "#f57c00", flexShrink: 0 }} aria-hidden />
+          <span style={{ fontSize: "12px", color: "#e65100" }}>
+            {t("admin.hardcodedPricesBanner", { count: Object.keys(HARDCODED_PRICES).length })}
+          </span>
+        </div>
+      )}
 
       {/* Prices tab */}
       {activeTab === "prices" && (

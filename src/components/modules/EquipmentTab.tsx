@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { Wind, Droplets, Filter } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { calcAirMovers, calcDehumidifiers, calcAirScrubbers } from "@/lib/logic/equipment";
-import { getPrice } from "@/constants/prices";
+import { usePriceMap } from "@/services/pricingService";
 import { DryingChambers } from "@/components/modules/DryingChambers";
 import { CalcInput } from "@/components/ui/CalcInput";
 
@@ -76,6 +76,7 @@ function QtyControl({
 
 export function EquipmentTab({ estimateId, areaId, area, category }: EquipmentTabProps) {
   const { t } = useTranslation();
+  const prices = usePriceMap();
   const [items, setItems] = useState<LineItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -129,7 +130,7 @@ export function EquipmentTab({ estimateId, areaId, area, category }: EquipmentTa
           xactimate_code: "EQP-AMVR",
           unit: "day",
           quantity: amQty * 3,
-          unit_price: getPrice("EQP-AMVR"),
+          unit_price: prices["EQP-AMVR"] ?? 0,
           is_manual_override: false,
           sort_order: 0,
         },
@@ -141,7 +142,7 @@ export function EquipmentTab({ estimateId, areaId, area, category }: EquipmentTa
           xactimate_code: "EQP-DH-LG",
           unit: "day",
           quantity: dhQty * 3,
-          unit_price: getPrice("EQP-DH-LG"),
+          unit_price: prices["EQP-DH-LG"] ?? 0,
           is_manual_override: false,
           sort_order: 1,
         },
@@ -155,7 +156,7 @@ export function EquipmentTab({ estimateId, areaId, area, category }: EquipmentTa
                 xactimate_code: "EQP-ASCR",
                 unit: "day",
                 quantity: asQty * 3,
-                unit_price: getPrice("EQP-ASCR"),
+                unit_price: prices["EQP-ASCR"] ?? 0,
                 is_manual_override: false,
                 sort_order: 2,
               },
@@ -267,7 +268,7 @@ export function EquipmentTab({ estimateId, areaId, area, category }: EquipmentTa
             <span style={{ fontSize: "16px", fontWeight: 600, color: "var(--color-text-primary)" }}>{t("equipment.airMover")}</span>
           </div>
           <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-primary)" }}>
-            {formatCurrency(airMoverQty * airMoverDays * getPrice("EQP-AMVR"))}
+            {formatCurrency(airMoverQty * airMoverDays * (prices["EQP-AMVR"] ?? 0))}
           </span>
         </div>
         <p style={{ fontSize: "12px", color: "var(--color-text-secondary)", margin: 0 }}>
@@ -291,7 +292,7 @@ export function EquipmentTab({ estimateId, areaId, area, category }: EquipmentTa
             />
           </div>
           <span style={{ fontSize: "13px", color: "var(--color-text-secondary)", alignSelf: "flex-end", paddingBottom: "4px" }}>
-            × ${getPrice("EQP-AMVR")}/{t("equipment.dayUnit")}
+            × ${prices["EQP-AMVR"] ?? 0}/{t("equipment.dayUnit")}
           </span>
         </div>
       </div>
@@ -304,7 +305,7 @@ export function EquipmentTab({ estimateId, areaId, area, category }: EquipmentTa
             <span style={{ fontSize: "16px", fontWeight: 600, color: "var(--color-text-primary)" }}>{t("equipment.dehumidifier")}</span>
           </div>
           <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-primary)" }}>
-            {formatCurrency(effectiveDehumQty * dehumDays * getPrice("EQP-DH-LG"))}
+            {formatCurrency(effectiveDehumQty * dehumDays * (prices["EQP-DH-LG"] ?? 0))}
           </span>
         </div>
         <p style={{ fontSize: "12px", color: "var(--color-text-secondary)", margin: 0 }}>
@@ -328,7 +329,7 @@ export function EquipmentTab({ estimateId, areaId, area, category }: EquipmentTa
             />
           </div>
           <span style={{ fontSize: "13px", color: "var(--color-text-secondary)", alignSelf: "flex-end", paddingBottom: "4px" }}>
-            × ${getPrice("EQP-DH-LG")}/{t("equipment.dayUnit")}
+            × ${prices["EQP-DH-LG"] ?? 0}/{t("equipment.dayUnit")}
           </span>
         </div>
       </div>
@@ -342,7 +343,7 @@ export function EquipmentTab({ estimateId, areaId, area, category }: EquipmentTa
               <span style={{ fontSize: "16px", fontWeight: 600, color: "var(--color-text-primary)" }}>{t("equipment.airScrubber")}</span>
             </div>
             <span style={{ fontSize: "14px", fontWeight: 600, color: "var(--color-primary)" }}>
-              {formatCurrency(scrubberQty * scrubberDays * getPrice("EQP-ASCR"))}
+              {formatCurrency(scrubberQty * scrubberDays * (prices["EQP-ASCR"] ?? 0))}
             </span>
           </div>
           <p style={{ fontSize: "12px", color: "var(--color-text-secondary)", margin: 0 }}>
@@ -366,7 +367,7 @@ export function EquipmentTab({ estimateId, areaId, area, category }: EquipmentTa
               />
             </div>
             <span style={{ fontSize: "13px", color: "var(--color-text-secondary)", alignSelf: "flex-end", paddingBottom: "4px" }}>
-              × ${getPrice("EQP-ASCR")}/{t("equipment.dayUnit")}
+              × ${prices["EQP-ASCR"] ?? 0}/{t("equipment.dayUnit")}
             </span>
           </div>
         </div>

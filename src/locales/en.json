@@ -271,6 +271,7 @@
     "materialsFloor": "Floor",
     "materialsWalls": "Walls",
     "materialsCeiling": "Ceiling",
-    "materialToggleCommon": "Show as chip (common)"
+    "materialToggleCommon": "Show as chip (common)",
+    "hardcodedPricesBanner": "Running on built-in prices ({{count}} items). Upload an Xactimate price list above to use your actual rates."
   }
 }

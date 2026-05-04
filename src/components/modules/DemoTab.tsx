@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 import { CalcInput } from "@/components/ui/CalcInput";
 import { DEMO_SECTIONS, ALL_DEMO_ITEMS, type DemoItemDef } from "@/constants/demoItems";
 import { getDemoPreloads } from "@/constants/areaPreloads";
-import { getPrice } from "@/constants/prices";
+import { usePriceMap } from "@/services/pricingService";
 
 interface LineItem {
   id: string;
@@ -41,6 +41,7 @@ function getDefaultQty(unit: string, sf: number, perimeter: number): number {
 
 export function DemoTab({ estimateId, areaId, areaName, areaSf, areaPerimeter }: DemoTabProps) {
   const { t } = useTranslation();
+  const prices = usePriceMap();
   const [lineItems, setLineItems] = useState<LineItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["walls"]));
@@ -76,7 +77,7 @@ export function DemoTab({ estimateId, areaId, areaName, areaSf, areaPerimeter }:
             xactimate_code: def.code,
             unit: def.unit,
             quantity: getDefaultQty(def.unit, areaSf, areaPerimeter),
-            unit_price: getPrice(def.code),
+            unit_price: prices[def.code] ?? 0,
             is_manual_override: false,
             sort_order: idx,
           };
@@ -146,7 +147,7 @@ export function DemoTab({ estimateId, areaId, areaName, areaSf, areaPerimeter }:
         xactimate_code: def.code,
         unit: def.unit,
         quantity: qty,
-        unit_price: getPrice(def.code),
+        unit_price: prices[def.code] ?? 0,
         is_manual_override: false,
         sort_order: lineItems.length,
       })

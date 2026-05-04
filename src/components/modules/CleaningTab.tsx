@@ -4,7 +4,7 @@ import { Trash2, Plus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { CalcInput } from "@/components/ui/CalcInput";
 import { generateCleaningItems, type WaterCategory } from "@/lib/logic/cleaning";
-import { getPrice } from "@/constants/prices";
+import { usePriceMap } from "@/services/pricingService";
 
 interface LineItem {
   id: string;
@@ -46,6 +46,7 @@ function formatCurrency(n: number) {
 
 export function CleaningTab({ estimateId, areaId, areaSf, category }: CleaningTabProps) {
   const { t } = useTranslation();
+  const prices = usePriceMap();
   const [items, setItems] = useState<LineItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -92,7 +93,7 @@ export function CleaningTab({ estimateId, areaId, areaSf, category }: CleaningTa
         xactimate_code: g.xactimateCode,
         unit: g.unit,
         quantity: g.quantity,
-        unit_price: getPrice(g.xactimateCode),
+        unit_price: prices[g.xactimateCode] ?? 0,
         is_manual_override: false,
         sort_order: idx,
       }));

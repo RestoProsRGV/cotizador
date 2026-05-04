@@ -8,6 +8,23 @@ Every significant decision is recorded here with:
 
 ---
 
+## Pricing Decisions
+
+### Hybrid pricing: DB-first with hardcoded fallback
+**Decision:** `usePriceMap()` hook initializes synchronously from `HARDCODED_PRICES` (so components always render with values), then fires an async Supabase fetch for DB prices. If DB has data, it overrides the hardcoded values; if empty or error, hardcoded stays silently. All module files (`DemoTab`, `PrepTab`, `CleaningTab`, `EquipmentTab`, `General`) use `prices[code] ?? 0` instead of the synchronous `getPrice()`.
+**Why:** The sync `getPrice()` function couldn't evolve to support DB-sourced prices without a full rewrite. The hook approach requires minimal changes to existing modules (one `usePriceMap()` call + swap `getPrice(x)` → `prices[x] ?? 0`) and guarantees no loading flicker since hardcoded values are always present.
+**Alternative considered:** Fully async pricing with loading state — rejected because it would require adding loading skeletons to every module and complicating the preload/insert flows.
+
+### price_items column: xactimate_code (not code)
+**Decision:** The `price_items` Supabase table uses column `xactimate_code` for the price code. Our internal codes (EQP-AMVR, DEM-DW-RM) differ from Xactimate format, so the DB lookup will return empty until prices are imported AND a code mapping is added. The hardcoded fallback is the expected default state.
+**Why:** The column name is what the schema was created with. Internal codes differ from Xactimate codes by design.
+
+### AdminPrices fallback banner
+**Decision:** When `price_items` is empty (DB not yet populated), AdminPrices shows a yellow banner: "Running on built-in prices (N items). Upload an Xactimate price list above to use your actual rates."
+**Why:** Owners need to know whether they're operating on real prices or the built-in defaults. Without the banner, there's no indication that prices haven't been configured.
+
+---
+
 ## Workflow Decisions
 
 ### claude.ai vs Claude Code separation

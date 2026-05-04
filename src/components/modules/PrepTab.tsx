@@ -11,7 +11,7 @@ import {
   type PrepSection,
 } from "@/constants/prepItems";
 import type { DemoItemDef } from "@/constants/demoItems";
-import { getPrice } from "@/constants/prices";
+import { usePriceMap } from "@/services/pricingService";
 
 interface LineItem {
   id: string;
@@ -42,6 +42,7 @@ function getDefaultQty(unit: string, sf: number, perimeter: number): number {
 
 export function PrepTab({ estimateId, areaId, areaName, areaSf, areaPerimeter }: PrepTabProps) {
   const { t } = useTranslation();
+  const prices = usePriceMap();
   const [lineItems, setLineItems] = useState<LineItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(
@@ -79,7 +80,7 @@ export function PrepTab({ estimateId, areaId, areaName, areaSf, areaPerimeter }:
             xactimate_code: def.code,
             unit: def.unit,
             quantity: getDefaultQty(def.unit, areaSf, areaPerimeter),
-            unit_price: getPrice(def.code),
+            unit_price: prices[def.code] ?? 0,
             is_manual_override: false,
             sort_order: idx,
           };
@@ -137,7 +138,7 @@ export function PrepTab({ estimateId, areaId, areaName, areaSf, areaPerimeter }:
         xactimate_code: def.code,
         unit: def.unit,
         quantity: qty,
-        unit_price: getPrice(def.code),
+        unit_price: prices[def.code] ?? 0,
         is_manual_override: false,
         sort_order: lineItems.length,
       })

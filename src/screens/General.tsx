@@ -9,7 +9,7 @@ import {
   classifyJobSize,
   SUPERVISION_FEE,
 } from "@/lib/logic/general";
-import { getPrice } from "@/constants/prices";
+import { usePriceMap } from "@/services/pricingService";
 
 interface LineItem {
   id: string;
@@ -43,6 +43,7 @@ export function General() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const prices = usePriceMap();
 
   const [items, setItems] = useState<LineItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,7 +84,7 @@ export function General() {
       const jobSize = classifyJobSize(totalSf);
 
       const toInsert = generated.map((g, idx) => {
-        let unitPrice = getPrice(g.xactimateCode);
+        let unitPrice = prices[g.xactimateCode] ?? 0;
         if (g.xactimateCode === "GEN-SUPV") {
           unitPrice = SUPERVISION_FEE[jobSize];
         }

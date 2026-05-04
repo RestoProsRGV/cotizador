@@ -1,7 +1,7 @@
 /**
- * Default prices for all line item codes.
- * Used since price_items table is empty.
- * Prices are per unit as specified.
+ * @deprecated Use HARDCODED_PRICES from src/constants/hardcodedPrices.ts
+ * or usePriceMap() from src/services/pricingService.ts instead.
+ * This file is kept for any legacy references; do not add new usages.
  */
 export const DEFAULT_PRICES: Record<string, number> = {
   // Equipment
