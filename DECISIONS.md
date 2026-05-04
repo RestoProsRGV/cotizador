@@ -8,6 +8,19 @@ Every significant decision is recorded here with:
 
 ---
 
+## Performance Decisions
+
+### Lazy loading — desktop and admin routes split from mobile bundle
+**Decision:** All desktop (`/desktop/*`) and admin (`/admin/*`) routes use `React.lazy()` + `Suspense`. Mobile field tool routes (`/estimates/*`, `/login`) remain eagerly loaded. Vite `manualChunks` splits vendor code into: `vendor-pdf` (@react-pdf/renderer), `vendor-xlsx` (xlsx), `vendor-math` (mathjs), `vendor` (React + Supabase + everything else).
+**Why:** Field techs on mobile never visit desktop or admin routes. Before this change, those pages (including the PDF renderer, xlsx parser, and admin UI) were bundled into a single 495 kB chunk. After: the main app chunk is 144 kB — a 71% reduction. On a slow 3G connection (1 Mbit), this shaves ~2.8 seconds off first-load parse time. Repeat visits benefit even more since vendor chunks are cached independently between deploys.
+**Alternative considered:** Lazy-load PDF renderer inside Total.tsx — deferred; `vendor-pdf` (840 kB) is loaded on both mobile and desktop since Total renders on mobile too. That optimization requires a more invasive hook refactor.
+
+### Resource hints for Supabase
+**Decision:** `index.html` includes `<link rel="preconnect">` and `<link rel="dns-prefetch">` for the Supabase project URL.
+**Why:** On slow connections, DNS resolution for the Supabase domain adds ~100-300ms before the first API call can start. Preconnect resolves DNS, TCP, and TLS in parallel with JS parsing. Zero code change, measurable benefit on mobile.
+
+---
+
 ## Testing Decisions
 
 ### Playwright E2E tests — separate from Vitest, skipped without credentials

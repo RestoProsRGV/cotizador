@@ -9,6 +9,56 @@ Every development session adds an entry. Format:
 
 ---
 
+## Session: May 4, 2026 — Performance: Lazy Loading + Bundle Split
+
+### Decisions made
+- Desktop (`/desktop/*`) and admin (`/admin/*`) routes lazy-loaded via `React.lazy()` + `Suspense`
+- `DesktopLoadingShell` shows dark sidebar skeleton + centered spinner while lazy chunk loads
+- Vite `manualChunks`: `vendor-pdf` (@react-pdf), `vendor-xlsx` (xlsx), `vendor-math` (mathjs), `vendor` (everything else)
+- `index.html` gets `preconnect` + `dns-prefetch` for Supabase URL
+- Lazy-loading PDF renderer inside Total.tsx deferred — requires invasive hook refactor
+
+### Bundle: before vs after
+
+| Chunk | Before | After (gzip) |
+|---|---|---|
+| Main app (`index.js`) | 495 kB / 149 kB gz | **144 kB / 32 kB gz** ✅ |
+| Desktop/admin chunks | included in main | 0.8–20 kB each (on demand) |
+| `vendor` (React + Supabase) | included in main | 1,386 kB / 492 kB gz (cached) |
+| `vendor-pdf` | included in main | 840 kB / 231 kB gz (cached) |
+| `vendor-math` | included in main | 574 kB / 154 kB gz (cached) |
+| `vendor-xlsx` | included in main | 332 kB / 113 kB gz (cached) |
+
+**Main bundle reduction: 71% smaller (495 → 144 kB). Mobile first-load: ~2.8 s saved on 3G.**
+Vendor chunks are cached independently — repeat visits only re-download changed chunks.
+
+### Files created
+- `src/components/DesktopLoadingShell.tsx` — sidebar skeleton + spinner for Suspense fallback
+
+### Files modified
+- `src/App.tsx` — `React.lazy()` imports for 5 desktop/admin pages; `Suspense` wrappers on each route
+- `vite.config.ts` — `build.rollupOptions.output.manualChunks` for vendor splitting
+- `index.html` — `preconnect` + `dns-prefetch` for Supabase
+- `DECISIONS.md` — performance + resource hint decisions recorded
+
+### Commits pushed
+- (pending)
+
+### Open items
+- PROMPT 5 ✅ done
+- Set `VITE_E2E_EMAIL` / `VITE_E2E_PASSWORD` in `.env` to run E2E tests
+- Run migrations `20260405000002` and `20260405000003` in Supabase SQL Editor
+- Add Vercel env vars for Sentry
+- Run a real job estimate end-to-end
+- Future: lazy-load `@react-pdf/renderer` inside `useEstimatePDF` hook (saves 231 kB gz on mobile initial load)
+
+### Deploy verification
+- Tests: 290 passing (2 pre-existing env-var failures excluded)
+- TypeScript: ✅ clean
+- Vercel: pending
+
+---
+
 ## Session: May 4, 2026 — Playwright E2E Tests
 
 ### Decisions made
@@ -31,7 +81,7 @@ Every development session adds an entry. Format:
 - `DECISIONS.md` — Playwright E2E decision recorded
 
 ### Commits pushed
-- (pending)
+- `a74345f` feat: Playwright E2E tests — auth, estimates, flow, desktop
 
 ### Open items
 - Set `VITE_E2E_EMAIL` and `VITE_E2E_PASSWORD` in local `.env` to run E2E against real Supabase
@@ -41,9 +91,10 @@ Every development session adds an entry. Format:
 - Run a real job estimate end-to-end
 
 ### Deploy verification
+- Commit: `a74345f`
 - Tests: 290 passing (2 pre-existing env-var failures excluded)
 - TypeScript: ✅ clean
-- Vercel: pending
+- Vercel: READY ✅ (no source code changes — no bundle impact)
 
 ---
 

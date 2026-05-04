@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { RequireAuth } from "@/components/layout/RequireAuth";
 import { useDeviceRedirect } from "@/hooks/useDeviceRedirect";
@@ -10,12 +11,15 @@ import { General } from "@/screens/General";
 import { Total } from "@/screens/Total";
 import { Setup } from "@/screens/Setup";
 import { Present } from "@/screens/Present";
-import { AdminPrices } from "@/screens/admin/AdminPrices";
-import { DesktopEstimatesList } from "@/pages/desktop/DesktopEstimatesList";
-import { DesktopEstimateDetail } from "@/pages/desktop/DesktopEstimateDetail";
-import { DesktopAdminPrices } from "@/pages/desktop/DesktopAdminPrices";
-import { DesktopSuggestionRules } from "@/pages/desktop/DesktopSuggestionRules";
 import { OfflineBanner } from "@/components/OfflineBanner";
+import { DesktopLoadingShell } from "@/components/DesktopLoadingShell";
+
+// Lazy-loaded: desktop and admin routes are never needed on mobile field tool
+const AdminPrices = lazy(() => import("@/screens/admin/AdminPrices").then(m => ({ default: m.AdminPrices })));
+const DesktopEstimatesList = lazy(() => import("@/pages/desktop/DesktopEstimatesList").then(m => ({ default: m.DesktopEstimatesList })));
+const DesktopEstimateDetail = lazy(() => import("@/pages/desktop/DesktopEstimateDetail").then(m => ({ default: m.DesktopEstimateDetail })));
+const DesktopAdminPrices = lazy(() => import("@/pages/desktop/DesktopAdminPrices").then(m => ({ default: m.DesktopAdminPrices })));
+const DesktopSuggestionRules = lazy(() => import("@/pages/desktop/DesktopSuggestionRules").then(m => ({ default: m.DesktopSuggestionRules })));
 
 // Route architecture:
 //   /                → RootRedirect: desktop browser → /desktop/estimates, mobile/PWA → /estimates
@@ -119,22 +123,26 @@ export function App() {
         }
       />
 
-      {/* ── Admin: owner-only configuration ── */}
+      {/* ── Admin: owner-only configuration (lazy — not needed on mobile) ── */}
       <Route
         path="/admin/prices"
         element={
           <RequireAuth requireOwner>
-            <AdminPrices />
+            <Suspense fallback={<DesktopLoadingShell />}>
+              <AdminPrices />
+            </Suspense>
           </RequireAuth>
         }
       />
 
-      {/* ── Desktop: review and management UI ── */}
+      {/* ── Desktop: review and management UI (lazy — never loaded on mobile) ── */}
       <Route
         path="/desktop/estimates"
         element={
           <RequireAuth>
-            <DesktopEstimatesList />
+            <Suspense fallback={<DesktopLoadingShell />}>
+              <DesktopEstimatesList />
+            </Suspense>
           </RequireAuth>
         }
       />
@@ -142,7 +150,9 @@ export function App() {
         path="/desktop/estimates/:id"
         element={
           <RequireAuth>
-            <DesktopEstimateDetail />
+            <Suspense fallback={<DesktopLoadingShell />}>
+              <DesktopEstimateDetail />
+            </Suspense>
           </RequireAuth>
         }
       />
@@ -150,7 +160,9 @@ export function App() {
         path="/desktop/admin/prices"
         element={
           <RequireAuth requireOwner>
-            <DesktopAdminPrices />
+            <Suspense fallback={<DesktopLoadingShell />}>
+              <DesktopAdminPrices />
+            </Suspense>
           </RequireAuth>
         }
       />
@@ -158,7 +170,9 @@ export function App() {
         path="/desktop/admin/suggestion-rules"
         element={
           <RequireAuth requireOwner>
-            <DesktopSuggestionRules />
+            <Suspense fallback={<DesktopLoadingShell />}>
+              <DesktopSuggestionRules />
+            </Suspense>
           </RequireAuth>
         }
       />
